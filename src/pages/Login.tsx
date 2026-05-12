@@ -34,7 +34,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const [appName, setAppName] = useState("Si Abon Eiite App");
+  const [appName, setAppName] = useState("ePay");
   const [appLogo, setAppLogo] = useState("");
 
   useEffect(() => {
@@ -214,21 +214,21 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-8">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-8 card-monitor">
         
         <div className="flex flex-col items-center mb-8">
           {/* Logo Joko Tingkir Placeholder */}
-          <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4 overflow-hidden">
+          <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4 overflow-hidden" style={{ border: '2px solid var(--neon-blue)', boxShadow: '0 0 10px var(--neon-blue)' }}>
             {appLogo ? (
               <img src={appLogo} alt="Logo" className="w-full h-full object-contain" />
             ) : (
-              <Activity className="w-10 h-10 text-emerald-600 dark:text-emerald-500" />
+              <Activity className="w-10 h-10 text-emerald-600" style={{ color: 'var(--neon-blue)' }} />
             )}
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 text-center">
+          <h1 className="header-title">
             {view === 'login' ? `Welcome To ${appName}` : view === 'register' ? 'Buat Akun Baru' : 'Lupa Kata Sandi'}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">
+          <p className="text-sm text-center mt-2" style={{ color: 'var(--neon-blue)' }}>
             {view === 'login' ? 'Masuk untuk mengakses dasbor Anda' : view === 'register' ? 'Daftar untuk mulai menggunakan aplikasi' : 'Masukkan email untuk mereset kata sandi Anda'}
           </p>
         </div>
@@ -285,7 +285,7 @@ export default function Login() {
 
             <Button 
               type="submit" 
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6 rounded-xl text-md font-semibold mt-2" 
+              className="btn-futuristic" 
               disabled={loading}
             >
               {loading ? 'Memproses...' : 'Masuk'}
@@ -438,7 +438,7 @@ export default function Login() {
             
             <Button 
               type="submit" 
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6 rounded-xl text-md font-semibold mt-4" 
+              className="btn-futuristic" 
               disabled={loading}
             >
               {loading ? 'Memproses...' : 'Daftar Sekarang'}
@@ -473,7 +473,7 @@ export default function Login() {
             
             <Button 
               type="submit" 
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6 rounded-xl text-md font-semibold mt-4" 
+              className="btn-futuristic" 
               disabled={loading}
             >
               {loading ? 'Mengirim...' : 'Kirim Email Reset'}

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
 
 export default function AdminDashboard() {
-  const [appName, setAppName] = useState("Si Abon Megilan");
+  const [appName, setAppName] = useState("ePay");
   const [companyName, setCompanyName] = useState("Puskesmas Sehat");
 
   useEffect(() => {

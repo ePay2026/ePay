@@ -32,7 +32,7 @@ async function startServer() {
       { id: 1, name: 'Kantor Induk', lat: -7.250445, lng: 112.768845, radius: 300 },
     ],
     settings: {
-      appName: 'Si Abon Eiite App',
+      appName: 'ePay',
       companyName: 'Puskesmas Sehat',
       headName: 'Dr. Budi Santoso',
       address: 'Jl. Kesehatan No. 1, Kota Sehat',
@@ -824,9 +824,9 @@ async function startServer() {
     if (resend) {
       try {
         await resend.emails.send({
-          from: 'Si Abon Megilan <onboarding@resend.dev>',
+          from: 'ePay <onboarding@resend.dev>',
           to: foundUser.email,
-          subject: 'Reset Password - Si Abon Megilan',
+          subject: 'Reset Password - ePay',
           html: `<p>Halo ${foundUser.name},</p><p>Klik tautan berikut untuk mereset password Anda:</p><p><a href="${resetLink}">${resetLink}</a></p><p>Tautan ini akan kedaluwarsa dalam 1 jam.</p>`,
         });
       } catch (error) {
