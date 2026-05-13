@@ -275,6 +275,9 @@ export default function AdminAttendance() {
     const empAttendance = attendanceData.filter(a => a.nip === emp.nip);
     const attendanceMap: any = {};
     let totalHoursCount = 0;
+    
+    let consecutiveDinasLuar = 0;
+    let consecutiveSakit = 0;
 
     dates.forEach(date => {
       const recordsForDate = empAttendance.filter(a => a.date === date);
@@ -285,15 +288,27 @@ export default function AdminAttendance() {
       const leaveRecord = recordsForDate.find(a => ['izin', 'sakit', 'Cuti', 'dinas_luar', 'pending'].includes(a.type) || ['izin', 'Sakit', 'Cuti', 'Dinas Luar', 'pending'].includes(a.status));
 
       if (leaveRecord) {
-        if (leaveRecord.status === 'izin' || leaveRecord.type === 'izin') statusInfo.code = 'I';
-        else if (leaveRecord.status === 'Sakit' || leaveRecord.type === 'sakit') statusInfo.code = 'S';
-        else if (leaveRecord.status === 'Cuti' || leaveRecord.type === 'Cuti') statusInfo.code = 'C';
-        else if (leaveRecord.status === 'Dinas Luar' || leaveRecord.type === 'dinas_luar') {
+        if (leaveRecord.status === 'izin' || leaveRecord.type === 'izin') {
+          statusInfo.code = 'I';
+        } else if (leaveRecord.status === 'Sakit' || leaveRecord.type === 'sakit') {
+          statusInfo.code = 'S';
+          consecutiveSakit++;
+          if (consecutiveSakit <= 3) {
+            statusInfo.hours = 6.42;
+          }
+        } else if (leaveRecord.status === 'Cuti' || leaveRecord.type === 'Cuti') {
+          statusInfo.code = 'C';
+        } else if (leaveRecord.status === 'Dinas Luar' || leaveRecord.type === 'dinas_luar') {
           statusInfo.code = 'D';
-          statusInfo.hours = 7;
+          consecutiveDinasLuar++;
+          if (consecutiveDinasLuar <= 3) {
+            statusInfo.hours = 6.42;
+          }
+        } else if (leaveRecord.status === 'pending') {
+          statusInfo.code = 'P';
+        } else {
+          statusInfo.code = leaveRecord.status?.[0] || 'M';
         }
-        else if (leaveRecord.status === 'pending') statusInfo.code = 'P';
-        else statusInfo.code = leaveRecord.status?.[0] || 'M';
       } else if (inRecord) {
         statusInfo.code = 'M';
         
@@ -355,6 +370,13 @@ export default function AdminAttendance() {
          } else {
              statusInfo.code = 'M';
          }
+      }
+      
+      if (statusInfo.code !== 'D') {
+        consecutiveDinasLuar = 0;
+      }
+      if (statusInfo.code !== 'S') {
+        consecutiveSakit = 0;
       }
       
       attendanceMap[date] = statusInfo;
