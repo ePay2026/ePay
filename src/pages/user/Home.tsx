@@ -75,28 +75,117 @@ export default function UserHome() {
           const data = await locRes.json();
           setLocations(data);
         }
+        let employeesData: any[] = [];
         if (empRes && empRes.ok) {
-          const data = await empRes.json();
-          setEmployees(data);
+          employeesData = await empRes.json();
+          setEmployees(employeesData);
         }
         if (setRes.ok) {
           const data = await setRes.json();
           setSettings(data);
         }
+        let shiftsData: any[] = [];
         if (shiftRes.ok) {
-          const data = await shiftRes.json();
-          setShifts(data);
+          shiftsData = await shiftRes.json();
+          setShifts(shiftsData);
         }
         if (annRes.ok) {
           const data = await annRes.json();
           setAnnouncements(data.filter((a: any) => a.isActive));
         }
         if (attRes.ok) {
-          const data = await attRes.json();
+          let data = await attRes.json();
           const userData = JSON.parse(localStorage.getItem('user') || '{}');
           const today = format(new Date(), 'yyyy-MM-dd');
           
           let nipToCheck = userData.nip;
+
+          // ======= AUTO PULANG CEPAT LOGIC =======
+          let hasAutoCheckedOut = false;
+          try {
+             const allUserIns = data.filter((a: any) => a.nip === nipToCheck && a.type === 'in');
+             const nowMs = Date.now();
+             for (const inRec of allUserIns) {
+                 const outRec = data.find((a: any) => a.nip === nipToCheck && a.type === 'out' && (a.date === inRec.date || (a.date > inRec.date && new Date(a.date).getTime() - new Date(inRec.date).getTime() <= 86400000)));
+                 
+                 // If no check-out found, determine if it has expired
+                 if (!outRec) {
+                     const activeShifts = resolveActiveShifts(shiftsData, userData, employeesData);
+                     let targetShift = activeShifts[0];
+                     
+                     if (activeShifts.length > 1 && inRec.time) {
+                         let inHour = 0, inMin = 0;
+                         const tMatch = inRec.time.match(/(\d+)[.:](\d+)/);
+                         if (tMatch) {
+                             inHour = parseInt(tMatch[1], 10);
+                             inMin = parseInt(tMatch[2], 10);
+                             if (inRec.time.toLowerCase().includes('pm') && inHour < 12) inHour += 12;
+                             if (inRec.time.toLowerCase().includes('am') && inHour === 12) inHour = 0;
+                             const inMinutes = inHour * 60 + inMin;
+                             let minD = Infinity;
+                             activeShifts.forEach((s: any) => {
+                                 const [sh, sm] = s.startTime.split(':').map(Number);
+                                 let diff = Math.abs(inMinutes - (sh * 60 + sm));
+                                 if (diff > 720) diff = 1440 - diff;
+                                 if (diff < minD) { minD = diff; targetShift = s; }
+                             });
+                         }
+                     }
+
+                     if (targetShift) {
+                         const inDate = new Date(inRec.date);
+                         let adjustedEndTime = targetShift.endTime;
+                         if (inDate.getDay() === 5 && targetShift.fridayEndTime) adjustedEndTime = targetShift.fridayEndTime;
+                         if (inDate.getDay() === 6 && targetShift.saturdayEndTime) adjustedEndTime = targetShift.saturdayEndTime;
+
+                         const [startH] = targetShift.startTime.split(':').map(Number);
+                         const [endH, endM] = adjustedEndTime.split(':').map(Number);
+                         const [yr, mo, da] = inRec.date.split('-').map(Number);
+                         let endDt = new Date(yr, mo - 1, da, endH, endM, 0, 0);
+
+                         if (startH > endH) {
+                             endDt.setDate(endDt.getDate() + 1); // Cross midnight
+                         }
+
+                         const afterMins = parseInt(targetShift.checkOutAfterMinutes || '120');
+                         const maxCheckOutDt = new Date(endDt.getTime() + afterMins * 60000);
+
+                         if (nowMs > maxCheckOutDt.getTime()) {
+                             // Shift is definitely over. Generate Putang Cepat record 1 hour before shiftEndTime.
+                             const autoOutTime = new Date(endDt.getTime() - 60 * 60000);
+                             const autoOutTimeString = `${String(autoOutTime.getHours()).padStart(2, '0')}:${String(autoOutTime.getMinutes()).padStart(2, '0')}`;
+                             const autoOutDateString = format(autoOutTime, 'yyyy-MM-dd');
+                             
+                             const fd = {
+                                nip: nipToCheck,
+                                name: inRec.name || userData.name,
+                                date: autoOutDateString,
+                                time: autoOutTimeString,
+                                type: 'out',
+                                location: JSON.stringify({ reason: 'Auto Checkout Sistem', lat: 0, lng: 0, accuracy: 0 }),
+                                status: 'Hadir (Pulang Cepat)',
+                                photoUrl: ''
+                             };
+
+                             await fetch('/api/attendance', { 
+                               method: 'POST', 
+                               headers: { 'Content-Type': 'application/json' },
+                               body: JSON.stringify(fd)
+                             });
+                             hasAutoCheckedOut = true;
+                         }
+                     }
+                 }
+             }
+             if (hasAutoCheckedOut) {
+                 const newAttRes = await fetch('/api/attendance');
+                 if (newAttRes.ok) {
+                     data = await newAttRes.json();
+                 }
+             }
+          } catch(e) { console.error('Auto checkout err', e); }
+          // ======= END AUTO PULANG CEPAT LOGIC =======
+
           const currentReplacingNip = localStorage.getItem('replacingFriendNip');
 
           if (currentReplacingNip) {

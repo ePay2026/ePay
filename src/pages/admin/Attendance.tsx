@@ -326,6 +326,11 @@ export default function AdminAttendance() {
              statusInfo.hours = Number(durationH.toFixed(2));
           }
           statusInfo.onlyIn = false;
+          
+          if (outRecord.status === 'Hadir (Pulang Cepat)') {
+              statusInfo.code = 'PC';
+              statusInfo.bgColor = 'bg-orange-100 dark:bg-orange-900/30';
+          }
         } else {
           // Only 'in' record
           statusInfo.hours = 6;
@@ -372,6 +377,7 @@ export default function AdminAttendance() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'M': return 'text-emerald-600 font-medium';
+      case 'PC': return 'text-orange-600 font-medium';
       case 'C': return 'text-amber-600 font-medium';
       case 'S': return 'text-blue-600 font-medium';
       case 'D': return 'text-purple-600 font-medium';
@@ -861,9 +867,11 @@ export default function AdminAttendance() {
     const lastRow = worksheet.lastRow ? worksheet.lastRow.number : 3;
     worksheet.getCell(lastRow + 2, 1).value = 'Keterangan:';
     worksheet.getCell(lastRow + 3, 1).value = 'M = Masuk/Hadir';
-    worksheet.getCell(lastRow + 4, 1).value = 'C = Cuti';
-    worksheet.getCell(lastRow + 5, 1).value = 'S = Sakit';
-    worksheet.getCell(lastRow + 6, 1).value = 'D = Dinas Luar';
+    worksheet.getCell(lastRow + 4, 1).value = 'PC = Pulang Cepat (Kurang 1 Jam)';
+    worksheet.getCell(lastRow + 5, 1).value = 'C = Cuti';
+    worksheet.getCell(lastRow + 6, 1).value = 'S = Sakit';
+    worksheet.getCell(lastRow + 7, 1).value = 'D = Dinas Luar';
+    worksheet.getCell(lastRow + 8, 1).value = 'I = Izin Pribadi';
 
     // Add Signature
     // Place signature on the right side of the table
@@ -1051,6 +1059,7 @@ export default function AdminAttendance() {
               </div>
               <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-500">
                 <span className="flex items-center gap-1"><span className="font-bold text-emerald-600">M</span> = Masuk/Hadir</span>
+                <span className="flex items-center gap-1"><span className="font-bold text-orange-600">PC</span> = Pulang Cepat</span>
                 <span className="flex items-center gap-1"><span className="font-bold text-amber-600">C</span> = Cuti</span>
                 <span className="flex items-center gap-1"><span className="font-bold text-blue-600">S</span> = Sakit</span>
                 <span className="flex items-center gap-1"><span className="font-bold text-indigo-600">I</span> = Izin Pribadi</span>
