@@ -20,7 +20,7 @@ export default function UserLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-transparent text-slate-900 dark:text-slate-50 flex flex-col font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 flex flex-col font-sans transition-colors duration-300">
       <div className="fixed top-4 right-4 z-50 bg-background/80 backdrop-blur rounded-full shadow-sm">
         <ThemeToggle />
       </div>

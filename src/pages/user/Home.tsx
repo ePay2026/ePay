@@ -870,7 +870,7 @@ export default function UserHome() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-transparent p-6 flex items-center justify-center transition-colors">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 flex items-center justify-center transition-colors">
       <div className="w-full max-w-md space-y-4">
         {announcements.length > 0 && (
           <div className="space-y-2">
@@ -884,14 +884,14 @@ export default function UserHome() {
             ))}
           </div>
         )}
-        <Card className="w-full max-w-md card-monitor border-teal-500/30">
+        <Card className="w-full max-w-md bg-white dark:bg-slate-900 border-teal-500/30 shadow-[0_0_20px_rgba(20,184,166,0.15)]">
           <CardHeader>
-            <CardTitle className="header-title flex items-center justify-center gap-2">
+            <CardTitle className="text-teal-600 dark:text-teal-400 text-2xl font-bold flex items-center gap-2">
               <Camera className="w-6 h-6" />
               {isTambahJaga ? 'Tambah Jaga Teman' : replacingFriendNip ? (hasCheckedIn ? (canCheckOut ? 'Absen Pulang (Ganti Jaga)' : 'Status Absensi (Ganti Jaga)') : 'Absen Masuk (Ganti Jaga)') : hasCheckedIn ? (canCheckOut ? 'Absen Pulang' : 'Status Absensi') : 'Absen Masuk'}
             </CardTitle>
             {user && (
-              <div className="text-slate-300 text-sm mt-2 space-y-1">
+              <div className="text-slate-600 dark:text-slate-300 text-sm mt-2 space-y-1">
                 <p><strong>Nama:</strong> {replacingFriendNip ? (employees.find(e => e.nip === replacingFriendNip)?.name || user.name) + ' (Digantikan)' : user.name}</p>
                 <p><strong>NIP:</strong> {replacingFriendNip || user.nip}</p>
                 <p><strong>Kantor 1:</strong> {user.office}</p>
@@ -1013,8 +1013,7 @@ export default function UserHome() {
                 <Button
                   onClick={() => (!isWithinRange && !hasCheckedIn) ? navigate('/user/leave') : handleAbsen(false)}
                   disabled={!location || isAbsenting || (!canCheckIn && !hasCheckedIn && isWithinRange) || (isTambahJaga && !selectedFriendNip) || (hasCheckedIn && !canCheckOut) || (hasCheckedIn && !isWithinRange)}
-                  className="btn-futuristic shadow-[0_0_10px_rgba(20,184,166,0.5)] transition-all disabled:opacity-50"
-                  style={{ backgroundImage: (!isWithinRange && !hasCheckedIn) ? 'linear-gradient(45deg, #f59e0b, #ea580c)' : 'linear-gradient(45deg, var(--neon-blue), #0055ff)', boxShadow: '0 0 10px rgba(0, 212, 255, 0.4)' }}
+                  className="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(20,184,166,0.5)] transition-all disabled:opacity-50"
                 >
                   {isAbsenting ? 'Memproses...' : (!isWithinRange && !hasCheckedIn) ? 'Ajukan Izin' : (!isWithinRange && hasCheckedIn) ? 'Di Luar Jangkauan Radius' : (isTambahJaga ? 'Absen Masuk (Ganti Teman)' : replacingFriendNip ? 'Absen Pulang (Ganti Jaga)' : hasCheckedIn ? 'Absen Pulang' : (canCheckIn ? 'Absen Masuk' : 'Belum Waktunya'))}
                 </Button>

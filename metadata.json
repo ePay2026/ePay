@@ -1,9 +1,6 @@
 {
   "name": "ePay",
-  "description": "Sistem Absensi Online Elegan Informatif Terkini",
-  "requestFramePermissions": [
-    "camera",
-    "geolocation"
-  ],
+  "description": "ePay attendance application",
+  "requestFramePermissions": [],
   "majorCapabilities": []
 }
