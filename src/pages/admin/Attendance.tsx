@@ -398,7 +398,7 @@ export default function AdminAttendance() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'M': return 'text-emerald-600 font-medium';
+      case 'M': return 'text-blue-600 font-medium';
       case 'PC': return 'text-orange-600 font-medium';
       case 'C': return 'text-amber-600 font-medium';
       case 'S': return 'text-blue-600 font-medium';
@@ -1080,7 +1080,7 @@ export default function AdminAttendance() {
                 </Table>
               </div>
               <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-500">
-                <span className="flex items-center gap-1"><span className="font-bold text-emerald-600">M</span> = Masuk/Hadir</span>
+                <span className="flex items-center gap-1"><span className="font-bold text-blue-600">M</span> = Masuk/Hadir</span>
                 <span className="flex items-center gap-1"><span className="font-bold text-orange-600">PC</span> = Pulang Cepat</span>
                 <span className="flex items-center gap-1"><span className="font-bold text-amber-600">C</span> = Cuti</span>
                 <span className="flex items-center gap-1"><span className="font-bold text-blue-600">S</span> = Sakit</span>
@@ -1149,14 +1149,14 @@ export default function AdminAttendance() {
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="bg-gradient-to-br from-emerald-50 to-white border-emerald-100">
+                <Card className="bg-gradient-to-br from-blue-50 to-white border-blue-100">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-emerald-600 mb-1">Tingkat Kehadiran</p>
+                        <p className="text-sm font-medium text-blue-600 mb-1">Tingkat Kehadiran</p>
                         <h3 className="text-3xl font-bold text-slate-900">{employees.length > 0 ? ((filteredAttendance.filter(a => a.type === 'in').length / (employees.length * 20)) * 100).toFixed(1) : 0}%</h3>
                       </div>
-                      <div className="h-12 w-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                      <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
                         <TrendingUp className="h-6 w-6" />
                       </div>
                     </div>
@@ -1300,20 +1300,20 @@ export default function AdminAttendance() {
 
               {/* Bottom Row: Wall of Fame */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="border-emerald-200 shadow-sm">
-                  <CardHeader className="bg-emerald-50 border-b border-emerald-100 pb-4">
-                    <CardTitle className="text-base flex items-center text-emerald-800">
-                      <Award className="h-5 w-5 mr-2 text-emerald-600" />
+                <Card className="border-blue-200 shadow-sm">
+                  <CardHeader className="bg-blue-50 border-b border-blue-100 pb-4">
+                    <CardTitle className="text-base flex items-center text-blue-800">
+                      <Award className="h-5 w-5 mr-2 text-blue-600" />
                       Early Birds (Top 5)
                     </CardTitle>
-                    <p className="text-xs text-emerald-600/80">Kedatangan paling konsisten awal</p>
+                    <p className="text-xs text-blue-600/80">Kedatangan paling konsisten awal</p>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <div className="divide-y divide-emerald-100">
+                    <div className="divide-y divide-blue-100">
                       {earlyBirds.map((person, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-3 hover:bg-emerald-50/50 transition-colors">
+                        <div key={idx} className="flex items-center justify-between p-3 hover:bg-blue-50/50 transition-colors">
                           <div className="flex items-center gap-3">
-                            <div className="h-6 w-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
+                            <div className="h-6 w-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
                               {idx + 1}
                             </div>
                             <div>
@@ -1321,7 +1321,7 @@ export default function AdminAttendance() {
                               <p className="text-xs text-slate-500">{person.dept}</p>
                             </div>
                           </div>
-                          <span className="text-sm font-semibold text-emerald-600">{person.time}</span>
+                          <span className="text-sm font-semibold text-blue-600">{person.time}</span>
                         </div>
                       ))}
                     </div>
@@ -1432,7 +1432,7 @@ export default function AdminAttendance() {
                             <div className="flex justify-end gap-2">
                               <Button 
                                 size="sm" 
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1"
+                                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
                                 onClick={() => handleApproveLeave(req.id, req.type)}
                               >
                                 <Check className="h-4 w-4" />
@@ -1661,7 +1661,7 @@ export default function AdminAttendance() {
                             {new Date(announcement.expiryDate).toLocaleDateString('id-ID')}
                           </TableCell>
                           <TableCell>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${announcement.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}`}>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${announcement.isActive ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-700'}`}>
                               {announcement.isActive ? 'Aktif' : 'Nonaktif'}
                             </span>
                           </TableCell>

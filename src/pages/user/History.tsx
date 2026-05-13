@@ -46,11 +46,11 @@ export default function UserHistory() {
   return (
     <div className="p-4 space-y-6">
       <div className="mt-4">
-        <h1 className="text-2xl font-bold tracking-tight text-white">Riwayat Absensi</h1>
-        <p className="text-sm text-slate-400">Pantau kehadiran Anda bulan ini.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Riwayat Absensi</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Pantau kehadiran Anda bulan ini.</p>
       </div>
 
-      <Card className="bg-slate-900 border-slate-800 text-slate-50">
+      <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl text-slate-900 dark:text-slate-50">
         <CardContent className="p-0">
           <Calendar
             mode="single"
@@ -58,40 +58,40 @@ export default function UserHistory() {
             onSelect={setDate}
             className="rounded-md border-0 w-full flex justify-center p-4"
             classNames={{
-              day_selected: "bg-emerald-500 text-white hover:bg-emerald-600 hover:text-white focus:bg-emerald-500 focus:text-white",
-              day_today: "bg-slate-800 text-emerald-400",
+              day_selected: "bg-blue-500 text-white hover:bg-blue-600 hover:text-white focus:bg-blue-500 focus:text-white",
+              day_today: "bg-slate-800 text-blue-400",
             }}
           />
         </CardContent>
       </Card>
 
-      <Card className="bg-slate-900 border-slate-800 text-slate-50">
+      <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl text-slate-900 dark:text-slate-50">
         <CardHeader>
           <CardTitle className="text-lg">Detail Tanggal: {date?.toLocaleDateString('id-ID')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {!leaveRecord && (
             <>
-              <div className="flex justify-between items-center border-b border-slate-800 pb-2">
-                <span className="text-slate-400">Jam Masuk</span>
-                <span className="font-medium text-emerald-400">{jamMasuk}</span>
+              <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-2">
+                <span className="text-slate-500 dark:text-slate-400">Jam Masuk</span>
+                <span className="font-medium text-blue-600 dark:text-blue-400">{jamMasuk}</span>
               </div>
-              <div className="flex justify-between items-center border-b border-slate-800 pb-2">
-                <span className="text-slate-400">Jam Keluar</span>
-                <span className="font-medium text-blue-400">{jamKeluar}</span>
+              <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-2">
+                <span className="text-slate-500 dark:text-slate-400">Jam Keluar</span>
+                <span className="font-medium text-blue-600 dark:text-blue-400">{jamKeluar}</span>
               </div>
             </>
           )}
           <div className="flex justify-between items-center pb-2">
-            <span className="text-slate-400">Status</span>
-            <span className={`font-medium px-2 py-1 capitalize rounded ${status === 'Belum Absen' ? 'text-slate-400 bg-slate-800' : 'text-emerald-500 bg-emerald-500/10'}`}>
+            <span className="text-slate-500 dark:text-slate-400">Status</span>
+            <span className={`font-medium px-2 py-1 capitalize rounded ${status === 'Belum Absen' ? 'text-slate-500 bg-slate-100 dark:text-slate-400 dark:bg-slate-800' : 'text-blue-700 bg-blue-100 dark:text-blue-500 dark:bg-blue-500/10'}`}>
               {status} {leaveRecord && leaveRecord.status === 'pending' ? '(Menunggu)' : leaveRecord && leaveRecord.status === 'Ditolak' ? '(Ditolak)' : ''}
             </span>
           </div>
           {leaveRecord && leaveReason && leaveReason !== 'undefined' && (
-            <div className="flex justify-between items-center mt-2 border-t border-slate-800 pt-2">
-              <span className="text-slate-400">Keterangan</span>
-              <span className="font-medium text-emerald-400 max-w-[200px] text-right truncate" title={leaveReason}>{leaveReason}</span>
+            <div className="flex justify-between items-center mt-2 border-t border-slate-200 dark:border-slate-800 pt-2">
+              <span className="text-slate-500 dark:text-slate-400">Keterangan</span>
+              <span className="font-medium text-blue-600 dark:text-blue-400 max-w-[200px] text-right truncate" title={leaveReason}>{leaveReason}</span>
             </div>
           )}
         </CardContent>

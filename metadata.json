@@ -1,6 +1,9 @@
 {
   "name": "ePay",
   "description": "ePay attendance application",
-  "requestFramePermissions": [],
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ],
   "majorCapabilities": []
 }

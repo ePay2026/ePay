@@ -959,7 +959,7 @@ export default function UserHome() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 flex items-center justify-center transition-colors">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6 flex items-center justify-center transition-colors">
       <div className="w-full max-w-md space-y-4">
         {announcements.length > 0 && (
           <div className="space-y-2">
@@ -973,9 +973,9 @@ export default function UserHome() {
             ))}
           </div>
         )}
-        <Card className="w-full max-w-md bg-white dark:bg-slate-900 border-teal-500/30 shadow-[0_0_20px_rgba(20,184,166,0.15)]">
+        <Card className="w-full max-w-md bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xl">
           <CardHeader>
-            <CardTitle className="text-teal-600 dark:text-teal-400 text-2xl font-bold flex items-center gap-2">
+            <CardTitle className="text-blue-600 dark:text-blue-400 text-2xl font-bold flex items-center gap-2">
               <Camera className="w-6 h-6" />
               {isTambahJaga ? 'Tambah Jaga Teman' : replacingFriendNip ? (hasCheckedIn ? (canCheckOut ? 'Absen Pulang (Ganti Jaga)' : 'Status Absensi (Ganti Jaga)') : 'Absen Masuk (Ganti Jaga)') : hasCheckedIn ? (canCheckOut ? 'Absen Pulang' : 'Status Absensi') : 'Absen Masuk'}
             </CardTitle>
@@ -990,8 +990,8 @@ export default function UserHome() {
           </CardHeader>
           <CardContent className="space-y-6">
             {leaveType ? (
-              <Alert className="bg-teal-50 dark:bg-teal-950/50 border-teal-200 dark:border-teal-900 text-teal-700 dark:text-teal-400">
-                <CheckCircle2 className="w-4 h-4 text-teal-600 dark:text-teal-500" />
+              <Alert className="bg-blue-50 dark:bg-blue-950/50 border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-400">
+                <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-500" />
                 <AlertDescription className="text-lg font-medium text-center py-4">
                   {leaveType === 'sakit' && "Semoga lekas sembuh dan diberikan kesehatan seperti sediakala. Aamiin"}
                   {leaveType === 'izin' && "Semoga segala urusannya dimudahkan"}
@@ -1001,25 +1001,25 @@ export default function UserHome() {
               </Alert>
             ) : hasCheckedOut && !isTambahJaga ? (
               <>
-                <Alert className="bg-teal-50 dark:bg-teal-950/50 border-teal-200 dark:border-teal-900 text-teal-700 dark:text-teal-400">
-                  <CheckCircle2 className="w-4 h-4 text-teal-600 dark:text-teal-500" />
+                <Alert className="bg-blue-50 dark:bg-blue-950/50 border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-400">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-500" />
                   <AlertDescription>
                     Anda telah menyelesaikan absensi untuk hari ini.
                   </AlertDescription>
                 </Alert>
                 {!replacingFriendNip && (
-                  <Button onClick={() => setIsTambahJaga(true)} className="w-full mt-4 border-teal-500 text-teal-700 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30" variant="outline">Tambah Jaga (Gantikan Teman)</Button>
+                  <Button onClick={() => setIsTambahJaga(true)} className="w-full mt-4 border-blue-500 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" variant="outline">Tambah Jaga (Gantikan Teman)</Button>
                 )}
               </>
             ) : (
               <>
                 {hasCheckedIn && !canCheckOut && !hasCheckedOut && !isTambahJaga && (
-                  <Alert className="bg-teal-50 dark:bg-teal-950/50 border-teal-200 dark:border-teal-900 text-teal-700 dark:text-teal-400 flex flex-col items-center justify-center py-4">
-                    <CheckCircle2 className="w-6 h-6 text-teal-600 dark:text-teal-500 mb-1" />
+                  <Alert className="bg-blue-50 dark:bg-blue-950/50 border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-400 flex flex-col items-center justify-center py-4">
+                    <CheckCircle2 className="w-6 h-6 text-blue-600 dark:text-blue-500 mb-1" />
                     <AlertDescription className="text-center space-y-2">
                       <p className="text-sm">Anda telah melakukan absen MASUK pada <strong>{checkInTime}</strong></p>
                       <div className="mt-2">
-                        <p className="text-xs text-teal-600/80 dark:text-teal-500/80 mb-1">Waktu Menuju Absen Pulang:</p>
+                        <p className="text-xs text-blue-600/80 dark:text-blue-500/80 mb-1">Waktu Menuju Absen Pulang:</p>
                         <p className="text-4xl font-mono font-bold text-slate-800 dark:text-white tracking-wider">{countdown}</p>
                       </div>
                     </AlertDescription>
@@ -1033,7 +1033,7 @@ export default function UserHome() {
                        <Button variant="ghost" size="sm" onClick={() => setIsTambahJaga(false)} className="h-6 text-red-500 hover:text-red-600 px-2 py-0">Batal</Button>
                     </div>
                     <Select onValueChange={setSelectedFriendNip} value={selectedFriendNip}>
-                      <SelectTrigger className="w-full bg-white dark:bg-slate-900 border-teal-500 text-slate-800 dark:text-slate-200">
+                      <SelectTrigger className="w-full bg-white dark:bg-slate-900 border-blue-500 text-slate-800 dark:text-slate-200">
                          <SelectValue placeholder="Pilih teman yang akan dijagakan" />
                       </SelectTrigger>
                       <SelectContent>
@@ -1045,7 +1045,7 @@ export default function UserHome() {
                   </div>
                 )}
                 
-                <div className="relative overflow-hidden rounded-xl border-2 border-teal-500/20">
+                <div className="relative overflow-hidden rounded-xl border-2 border-blue-500/20">
                   <Webcam
                     audio={false}
                     ref={webcamRef}
@@ -1059,7 +1059,7 @@ export default function UserHome() {
                     onUserMediaError={() => {}}
                     screenshotQuality={0.5}
                   />
-                  <div className="absolute inset-0 border-2 border-teal-500/50 pointer-events-none" />
+                  <div className="absolute inset-0 border-2 border-blue-500/50 pointer-events-none" />
                 </div>
 
                 {error && (
@@ -1069,25 +1069,25 @@ export default function UserHome() {
                 )}
 
                 {!hasCheckedIn && checkInCountdown && !canCheckIn && (
-                  <Alert className="bg-teal-50 dark:bg-teal-950/50 border-teal-200 dark:border-teal-900 text-teal-700 dark:text-teal-400">
+                  <Alert className="bg-blue-50 dark:bg-blue-950/50 border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-400">
                     <AlertDescription className="text-center">
                       <p className="mb-2">Shift berikutnya: <strong>{nextShift?.name} ({nextShift?.startTime})</strong></p>
                       <p className="text-xs mb-1">Waktu menuju pembukaan absen masuk:</p>
-                      <p className="text-3xl font-mono font-bold tracking-wider text-slate-800 dark:text-teal-100">{checkInCountdown}</p>
+                      <p className="text-3xl font-mono font-bold tracking-wider text-slate-800 dark:text-blue-100">{checkInCountdown}</p>
                     </AlertDescription>
                   </Alert>
                 )}
 
                 <div className="flex flex-col gap-2 text-slate-500 dark:text-slate-400 text-sm">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-teal-600 dark:text-teal-500 shrink-0" />
+                    <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-500 shrink-0" />
                     <span className="flex-1 text-slate-700 dark:text-slate-300">{isLocating ? 'Mencari lokasi...' : address ? `Lokasi: ${address}` : 'Lokasi tidak ditemukan'}</span>
                     <Button 
                       variant="outline" 
                       size="sm" 
                       onClick={fetchLocation} 
                       disabled={isLocating && !canRefresh}
-                      className="h-8 border-teal-500/30 text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-500/10 shrink-0"
+                      className="h-8 border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 shrink-0"
                     >
                       {isLocating && !canRefresh ? 'Mencari...' : 'Refresh'}
                     </Button>
@@ -1102,7 +1102,7 @@ export default function UserHome() {
                 <Button
                   onClick={() => (!isWithinRange && !hasCheckedIn) ? navigate('/user/leave') : handleAbsen(false)}
                   disabled={!location || isAbsenting || (!canCheckIn && !hasCheckedIn && isWithinRange) || (isTambahJaga && !selectedFriendNip) || (hasCheckedIn && !canCheckOut) || (hasCheckedIn && !isWithinRange)}
-                  className="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(20,184,166,0.5)] transition-all disabled:opacity-50"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-sm transition-all disabled:opacity-50"
                 >
                   {isAbsenting ? 'Memproses...' : (!isWithinRange && !hasCheckedIn) ? 'Ajukan Izin' : (!isWithinRange && hasCheckedIn) ? 'Di Luar Jangkauan Radius' : (isTambahJaga ? 'Absen Masuk (Ganti Teman)' : replacingFriendNip ? 'Absen Pulang (Ganti Jaga)' : hasCheckedIn ? 'Absen Pulang' : (canCheckIn ? 'Absen Masuk' : 'Belum Waktunya'))}
                 </Button>
@@ -1116,14 +1116,14 @@ export default function UserHome() {
                     }}
                     disabled={isAbsenting || !isWithinRange}
                     variant="outline"
-                    className="w-full mt-3 border-orange-500 text-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:hover:bg-orange-500/10 font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(249,115,22,0.1)] transition-all"
+                    className="w-full mt-3 border-orange-500 text-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:hover:bg-orange-500/10 font-bold py-3 rounded-lg shadow-sm transition-all"
                   >
                     {isAbsenting ? 'Memproses...' : !isWithinRange ? 'Pulang Cepat (Di Luar Radius)' : 'Pulang Cepat'}
                   </Button>
                 )}
                 
                 {!isTambahJaga && !hasCheckedIn && !replacingFriendNip && (
-                  <Button onClick={() => setIsTambahJaga(true)} className="w-full mt-4 border-teal-500 text-teal-700 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30" variant="outline">
+                  <Button onClick={() => setIsTambahJaga(true)} className="w-full mt-4 border-blue-500 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30" variant="outline">
                     Tambah Jaga (Gantikan Teman)
                   </Button>
                 )}

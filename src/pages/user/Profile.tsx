@@ -205,7 +205,7 @@ export default function UserProfile() {
             {employeeData?.photoUrl || user.photoUrl ? (
               <img src={employeeData?.photoUrl || user.photoUrl} alt="Profile" className="object-cover h-full w-full" />
             ) : (
-              <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 text-2xl">
+              <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-2xl">
                 {user.name?.charAt(0) || 'U'}
               </AvatarFallback>
             )}
@@ -214,7 +214,7 @@ export default function UserProfile() {
             type="button"
             onClick={handlePhotoClick}
             disabled={isUploading}
-            className="absolute bottom-0 right-0 rounded-full bg-emerald-600 p-2 text-white shadow-sm hover:bg-emerald-700 transition"
+            className="absolute bottom-0 right-0 rounded-full bg-blue-600 p-2 text-white shadow-sm hover:bg-blue-700 transition"
           >
             {isUploading ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -232,11 +232,11 @@ export default function UserProfile() {
         </div>
         <div className="text-center">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">{user.name || 'Nama Pegawai'}</h2>
-          <p className="text-emerald-600 dark:text-emerald-400 font-medium">{user.nip || 'NIP Pegawai'}</p>
+          <p className="text-blue-600 dark:text-blue-400 font-medium">{user.nip || 'NIP Pegawai'}</p>
         </div>
       </div>
 
-      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-50 mt-8">
+      <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md text-slate-900 dark:text-slate-50 mt-8 ">
         <CardHeader>
           <CardTitle className="text-lg">Pengaturan Aplikasi</CardTitle>
         </CardHeader>
@@ -251,7 +251,7 @@ export default function UserProfile() {
         </CardContent>
       </Card>
 
-      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-50 mt-4">
+      <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md text-slate-900 dark:text-slate-50 mt-4 ">
         <CardHeader>
           <CardTitle className="text-lg">Informasi Pegawai</CardTitle>
         </CardHeader>
@@ -312,7 +312,7 @@ export default function UserProfile() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" disabled={isSubmitting}>
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={isSubmitting}>
               {isSubmitting ? 'Menyimpan...' : 'Simpan Password'}
             </Button>
           </form>

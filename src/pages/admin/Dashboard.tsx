@@ -27,7 +27,7 @@ export default function AdminDashboard() {
 
   const [stats, setStats] = useState([
     { title: "Total Karyawan", value: "0", icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
-    { title: "Hadir Hari Ini", value: "0", icon: UserCheck, color: "text-emerald-600", bg: "bg-emerald-100" },
+    { title: "Hadir Hari Ini", value: "0", icon: UserCheck, color: "text-blue-600", bg: "bg-blue-100" },
     { title: "Terlambat", value: "0", icon: Clock, color: "text-amber-600", bg: "bg-amber-100" },
     { title: "Belum Absen", value: "0", icon: UserX, color: "text-red-600", bg: "bg-red-100" },
   ]);
@@ -155,7 +155,7 @@ export default function AdminDashboard() {
         
         setStats([
           { title: "Total Karyawan", value: employees.length.toString(), icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
-          { title: "Hadir Hari Ini", value: presentToday.length.toString(), icon: UserCheck, color: "text-emerald-600", bg: "bg-emerald-100" },
+          { title: "Hadir Hari Ini", value: presentToday.length.toString(), icon: UserCheck, color: "text-blue-600", bg: "bg-blue-100" },
           { title: "Terlambat", value: lateToday.length.toString(), icon: Clock, color: "text-amber-600", bg: "bg-amber-100" },
           { title: "Belum Absen", value: Math.max(0, employees.length - presentToday.length).toString(), icon: UserX, color: "text-red-600", bg: "bg-red-100" },
         ]);
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
                       )}
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 h-8 text-xs px-2" onClick={() => handleApprove(leave.id, leave.type, 'approve')}>Setujui</Button>
+                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700 h-8 text-xs px-2" onClick={() => handleApprove(leave.id, leave.type, 'approve')}>Setujui</Button>
                       <Button size="sm" variant="destructive" className="h-8 text-xs px-2" onClick={() => handleApprove(leave.id, leave.type, 'reject')}>Tolak</Button>
                     </div>
                   </li>

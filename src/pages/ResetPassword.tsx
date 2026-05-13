@@ -62,17 +62,20 @@ export default function ResetPassword() {
   if (!token) return null;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-8 ">
         
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4">
-            <Lock className="w-8 h-8 text-emerald-600 dark:text-emerald-500" />
+        <div className="flex flex-col items-center mb-6">
+          <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 shadow-sm">
+            <Lock className="w-8 h-8 text-blue-600 dark:text-blue-500" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 text-center">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 text-center uppercase tracking-tight">
             Perbarui Kata Sandi
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">
+          <p className="text-sm font-medium text-blue-600 dark:text-blue-400 text-center mt-1 uppercase tracking-wider text-[10px]">
+            Smart Presence System
+          </p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-3">
             Masukkan kata sandi baru untuk akun Anda
           </p>
         </div>
@@ -87,7 +90,7 @@ export default function ResetPassword() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
-              className="focus-visible:ring-emerald-500"
+              className="focus-visible:ring-blue-500"
             />
           </div>
           <div className="space-y-2">
@@ -99,13 +102,13 @@ export default function ResetPassword() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="focus-visible:ring-emerald-500"
+              className="focus-visible:ring-blue-500"
             />
           </div>
 
           <Button 
             type="submit" 
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" 
+            className="w-full bg-blue-600 hover:bg-blue-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] border border-blue-400/50 text-white transition-all py-6 rounded-xl text-md font-semibold mt-4" 
             disabled={loading}
           >
             {loading ? 'Memperbarui...' : 'Perbarui Kata Sandi'}
@@ -115,7 +118,7 @@ export default function ResetPassword() {
         <div className="mt-6 text-center">
           <Button 
             variant="link" 
-            className="text-emerald-600 dark:text-emerald-500 p-0 h-auto font-medium"
+            className="text-blue-600 dark:text-blue-500 p-0 h-auto font-medium"
             onClick={() => navigate('/login')}
           >
             Kembali ke Halaman Login

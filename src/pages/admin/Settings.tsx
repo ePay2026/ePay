@@ -284,7 +284,7 @@ export default function AdminSettings() {
                   checked={absensiSettings.enableCountdown}
                   onChange={(e) => setAbsensiSettings(prev => ({ ...prev, enableCountdown: e.target.checked }))}
                   className="h-4 w-4 rounded border-gray-300 relative cursor-pointer
-                    appearance-none checked:bg-teal-600 checked:border-transparent
+                    appearance-none checked:bg-blue-600 checked:border-transparent
                     after:content-[''] after:hidden checked:after:block
                     after:absolute after:left-[4px] after:top-0.5 after:w-[5px] after:h-[10px] 
                     after:border-r-2 after:border-b-2 after:border-white after:rotate-45"
@@ -300,7 +300,7 @@ export default function AdminSettings() {
                   checked={absensiSettings.enableEarlyCheckout}
                   onChange={(e) => setAbsensiSettings(prev => ({ ...prev, enableEarlyCheckout: e.target.checked }))}
                   className="h-4 w-4 rounded border-gray-300 relative cursor-pointer
-                    appearance-none checked:bg-teal-600 checked:border-transparent
+                    appearance-none checked:bg-blue-600 checked:border-transparent
                     after:content-[''] after:hidden checked:after:block
                     after:absolute after:left-[4px] after:top-0.5 after:w-[5px] after:h-[10px] 
                     after:border-r-2 after:border-b-2 after:border-white after:rotate-45"

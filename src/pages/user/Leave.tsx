@@ -207,11 +207,11 @@ export default function UserLeave() {
   return (
     <div className="p-4 space-y-6">
       <div className="mt-4">
-        <h1 className="text-2xl font-bold tracking-tight text-white">Pengajuan Izin</h1>
-        <p className="text-sm text-slate-400">Ajukan izin tidak masuk kerja.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Pengajuan Izin</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Ajukan izin tidak masuk kerja.</p>
       </div>
 
-      <Card className="bg-slate-900 border-slate-800 text-slate-50">
+      <Card className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl text-slate-900 dark:text-slate-50">
         <CardHeader>
           <CardTitle className="text-lg">Formulir Izin</CardTitle>
           <CardDescription className="text-slate-400">Isi detail izin Anda di bawah ini.</CardDescription>
@@ -251,12 +251,12 @@ export default function UserLeave() {
 
             <div className="space-y-2">
               <Label htmlFor="attachment" className="text-slate-300">Lampiran (Surat Dokter/Bukti)</Label>
-              <Input id="attachment" type="file" onChange={(e) => setAttachment(e.target.files?.[0] || null)} className="bg-slate-950 border-slate-800 text-slate-50 file:text-emerald-400" />
+              <Input id="attachment" type="file" onChange={(e) => setAttachment(e.target.files?.[0] || null)} className="bg-slate-950 border-slate-800 text-slate-50 file:text-blue-400" />
             </div>
 
             <Button 
               type="submit" 
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white mt-4"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4"
               disabled={loading}
             >
               {loading ? 'Mengirim...' : 'Ajukan Izin'}
@@ -266,7 +266,7 @@ export default function UserLeave() {
       </Card>
 
       <div className="mt-8">
-        <h3 className="text-lg font-medium text-white mb-4">Riwayat Pengajuan</h3>
+        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">Riwayat Pengajuan</h3>
         <div className="space-y-3 pb-8">
           {leaveHistory.length === 0 ? (
             <p className="text-sm text-slate-500 text-center py-4">Belum ada riwayat pengajuan.</p>
@@ -278,7 +278,7 @@ export default function UserLeave() {
                 displayReason = history.location.reason;
               }
               return (
-              <Card key={idx} className="bg-slate-900 border-slate-800 text-slate-50">
+              <Card key={idx} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md text-slate-900 dark:text-slate-50">
                 <CardContent className="p-4 flex flex-col justify-between items-start gap-2">
                   <div className="w-full flex justify-between items-center">
                     <div>
@@ -295,7 +295,7 @@ export default function UserLeave() {
                         ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' 
                         : history.status === 'Ditolak'
                         ? 'bg-red-500/10 text-red-400 border-red-500/20'
-                        : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
                     }`}>
                       {history.status === 'pending' ? 'Menunggu' : history.status === 'Ditolak' ? 'Ditolak' : 'Disetujui'}
                     </span>

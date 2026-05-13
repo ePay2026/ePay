@@ -684,7 +684,7 @@ export default function AdminEmployees() {
               <div className="flex gap-2">
                 <Dialog open={isBulkUploadOpen} onOpenChange={setIsBulkUploadOpen}>
                   <DialogTrigger render={
-                    <Button variant="outline" className="flex items-center gap-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50">
+                    <Button variant="outline" className="flex items-center gap-2 border-blue-500 text-blue-600 hover:bg-blue-50">
                       <FileSpreadsheet className="h-4 w-4" />
                       Import Excel
                     </Button>
@@ -695,7 +695,7 @@ export default function AdminEmployees() {
                     </DialogHeader>
                     <div className="space-y-4 py-4 text-center">
                       <div className="p-4 border-2 border-dashed border-slate-200 rounded-lg bg-slate-50 flex flex-col items-center justify-center gap-3 relative transition-colors hover:bg-slate-100">
-                        <Upload className="h-10 w-10 text-emerald-500" />
+                        <Upload className="h-10 w-10 text-blue-500" />
                         <div className="space-y-1">
                           <p className="text-sm font-medium">Klik untuk mengupload file Excel (.xlsx, .xls)</p>
                           <p className="text-xs text-slate-500">Gunakan kolom: Nama, NIP, Gender, Klaster, Unit, Kantor, Kantor2, Email</p>
@@ -709,7 +709,7 @@ export default function AdminEmployees() {
                           title="Klik untuk memilih file excel"
                         />
                         {isUploading && (
-                          <div className="flex items-center gap-2 text-sm text-emerald-600 font-medium animate-pulse">
+                          <div className="flex items-center gap-2 text-sm text-blue-600 font-medium animate-pulse">
                             Memproses file...
                           </div>
                         )}
@@ -725,11 +725,11 @@ export default function AdminEmployees() {
                           Download Format Template Excel
                         </Button>
                       </div>
-                      <div className="text-left text-xs space-y-2 p-3 bg-emerald-50 rounded border border-emerald-100">
-                        <p className="font-semibold text-emerald-800">Petunjuk Format Excel:</p>
-                        <ul className="list-disc list-inside space-y-1 text-emerald-700">
+                      <div className="text-left text-xs space-y-2 p-3 bg-blue-50 rounded border border-blue-100">
+                        <p className="font-semibold text-blue-800">Petunjuk Format Excel:</p>
+                        <ul className="list-disc list-inside space-y-1 text-blue-700">
                           <li>Sangat disarankan memakai <strong>Format Template Excel</strong> di atas.</li>
-                          <li>Pastikan kolom NIP diformat sebagai <kbd className="px-1 py-0.5 bg-emerald-100 rounded text-[10px]">Text</kbd> (atau awali dengan petik satu <code>'198...</code>) agar angkanya tidak terpotong.</li>
+                          <li>Pastikan kolom NIP diformat sebagai <kbd className="px-1 py-0.5 bg-blue-100 rounded text-[10px]">Text</kbd> (atau awali dengan petik satu <code>'198...</code>) agar angkanya tidak terpotong.</li>
                           <li>File harus berekstensi .xlsx atau .xls</li>
                           <li>Password default saat mengunggah karyawan akan diatur otomatis menjadi <strong>123456</strong>.</li>
                         </ul>

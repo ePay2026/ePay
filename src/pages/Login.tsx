@@ -213,22 +213,25 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-8 ">
         
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center mb-6">
           {/* Logo Joko Tingkir Placeholder */}
-          <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4 overflow-hidden">
+          <div className="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 overflow-hidden shadow-sm">
             {appLogo ? (
               <img src={appLogo} alt="Logo" className="w-full h-full object-contain" />
             ) : (
-              <Activity className="w-10 h-10 text-emerald-600 dark:text-emerald-500" />
+              <Activity className="w-10 h-10 text-blue-600 dark:text-blue-500" />
             )}
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 text-center">
-            {view === 'login' ? `Welcome To ${appName}` : view === 'register' ? 'Buat Akun Baru' : 'Lupa Kata Sandi'}
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 text-center uppercase tracking-tight">
+            {view === 'login' ? `${appName}` : view === 'register' ? 'Buat Akun Baru' : 'Lupa Kata Sandi'}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">
+          <p className="text-sm font-medium text-blue-600 dark:text-blue-400 text-center mt-1 uppercase tracking-wider text-[10px]">
+            {view === 'login' && 'Smart Presence System'}
+          </p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-3">
             {view === 'login' ? 'Masuk untuk mengakses dasbor Anda' : view === 'register' ? 'Daftar untuk mulai menggunakan aplikasi' : 'Masukkan email untuk mereset kata sandi Anda'}
           </p>
         </div>
@@ -244,7 +247,7 @@ export default function Login() {
                 value={nip}
                 onChange={(e) => setNip(e.target.value)}
                 required
-                className="focus-visible:ring-emerald-500"
+                className="focus-visible:ring-blue-500"
               />
             </div>
             <div className="space-y-2">
@@ -256,7 +259,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="focus-visible:ring-emerald-500"
+                className="focus-visible:ring-blue-500"
               />
             </div>
             
@@ -277,7 +280,7 @@ export default function Login() {
               <button 
                 type="button" 
                 onClick={() => setView('forgot')}
-                className="text-sm font-medium text-emerald-600 hover:text-emerald-500 dark:text-emerald-400"
+                className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400"
               >
                 Lupa kata sandi?
               </button>
@@ -285,7 +288,7 @@ export default function Login() {
 
             <Button 
               type="submit" 
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6 rounded-xl text-md font-semibold mt-2" 
+              className="w-full bg-blue-600 hover:bg-blue-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] border border-blue-400/50 text-white py-6 rounded-xl text-md font-semibold mt-2 transition-all" 
               disabled={loading}
             >
               {loading ? 'Memproses...' : 'Masuk'}
@@ -307,7 +310,7 @@ export default function Login() {
               <button 
                 type="button" 
                 onClick={() => setView('register')}
-                className="font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400"
+                className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400"
               >
                 Daftar
               </button>
@@ -438,7 +441,7 @@ export default function Login() {
             
             <Button 
               type="submit" 
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6 rounded-xl text-md font-semibold mt-4" 
+              className="w-full bg-blue-600 hover:bg-blue-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] border border-blue-400/50 text-white py-6 rounded-xl text-md font-semibold mt-4 transition-all" 
               disabled={loading}
             >
               {loading ? 'Memproses...' : 'Daftar Sekarang'}
@@ -449,7 +452,7 @@ export default function Login() {
               <button 
                 type="button" 
                 onClick={() => setView('login')}
-                className="font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400"
+                className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400"
               >
                 Masuk
               </button>
@@ -473,7 +476,7 @@ export default function Login() {
             
             <Button 
               type="submit" 
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6 rounded-xl text-md font-semibold mt-4" 
+              className="w-full bg-blue-600 hover:bg-blue-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] border border-blue-400/50 text-white py-6 rounded-xl text-md font-semibold mt-4 transition-all" 
               disabled={loading}
             >
               {loading ? 'Mengirim...' : 'Kirim Email Reset'}
@@ -484,7 +487,7 @@ export default function Login() {
               <button 
                 type="button" 
                 onClick={() => setView('login')}
-                className="font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400"
+                className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400"
               >
                 Masuk
               </button>
