@@ -565,7 +565,14 @@ export default function UserHome() {
         if (googleMapsApiKey) {
           try {
             const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLat},${userLng}&key=${googleMapsApiKey}`);
-            const data = await response.json();
+            
+            let data;
+            try {
+              data = await response.json();
+            } catch(e) {
+               throw new Error("Invalid response format from Google Maps");
+            }
+            
             if (data.results && data.results.length > 0) {
               const result = data.results[0];
               fullAddressLower = result.formatted_address.toLowerCase();
@@ -605,7 +612,13 @@ export default function UserHome() {
         if (!googleMapsSuccess) {
           const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLng}&zoom=14&addressdetails=1`);
           if (!response.ok) throw new Error("Nominatim request failed");
-          const data = await response.json();
+          
+          let data;
+          try {
+            data = await response.json();
+          } catch(e) {
+             throw new Error("Invalid response format from OpenStreetMap");
+          }
           
           if (data && data.address) {
             const parts = [];
@@ -903,8 +916,20 @@ export default function UserHome() {
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Gagal melakukan absen');
+        let errMessage = 'Gagal melakukan absen';
+        try {
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const data = await response.json();
+            errMessage = data.message || errMessage;
+          } else {
+            const text = await response.text();
+            errMessage = `${errMessage} (${response.status}: ${text.substring(0, 50)})`;
+          }
+        } catch(e) {
+          console.error("Error parsing response:", e);
+        }
+        throw new Error(errMessage);
       }
       alert('Absensi berhasil dan terkirim ke Database Kepegawaian');
       

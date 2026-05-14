@@ -17,6 +17,17 @@ async function startServer() {
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+  // Global Error Handler for Payload Too Large
+  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (err instanceof SyntaxError && 'status' in err && err.status === 400 && 'body' in err) {
+      return res.status(400).json({ success: false, message: 'Bad request: Invalid JSON payload' });
+    }
+    if (err.type === 'entity.too.large') {
+      return res.status(413).json({ success: false, message: 'Payload too large. Ukuran file/foto mungkin terlalu besar (Maks 50MB).' });
+    }
+    next(err);
+  });
+
   // Mock Database (In-Memory for Prototype)
   const db = {
     users: [
