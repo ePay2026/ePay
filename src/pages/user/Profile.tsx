@@ -19,8 +19,16 @@ export default function UserProfile() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const [employeeData, setEmployeeData] = useState<any>(null);
   const [alarmEnabled, setAlarmEnabled] = useState(localStorage.getItem('alarmEnabled') !== 'false');
-  const [alarmBefore, setAlarmBefore] = useState(parseInt(localStorage.getItem('alarmBefore') || '10', 10));
-  const [alarmAfter, setAlarmAfter] = useState(parseInt(localStorage.getItem('alarmAfter') || '15', 10));
+  const [alarmBefore, setAlarmBefore] = useState(() => {
+    const val = localStorage.getItem('alarmBefore');
+    const parsed = parseInt(val || '10', 10);
+    return isNaN(parsed) ? 10 : parsed;
+  });
+  const [alarmAfter, setAlarmAfter] = useState(() => {
+    const val = localStorage.getItem('alarmAfter');
+    const parsed = parseInt(val || '15', 10);
+    return isNaN(parsed) ? 15 : parsed;
+  });
 
   // Password change state
   const [isDialogOpen, setIsDialogOpen] = useState(false);
