@@ -279,13 +279,20 @@ export default function AdminAttendance() {
     let consecutiveDinasLuar = 0;
     let consecutiveSakit = 0;
 
+    const empLeaveRecords = empAttendance.filter(a => ['izin', 'sakit', 'Cuti', 'dinas_luar', 'pending'].includes(a.type) || ['izin', 'Sakit', 'Cuti', 'Dinas Luar', 'pending'].includes(a.status));
     dates.forEach(date => {
       const recordsForDate = empAttendance.filter(a => a.date === date);
       let statusInfo = { code: '-', hours: 0, onlyIn: false, bgColor: '' };
       
       const inRecord = recordsForDate.find(a => a.type === 'in');
       let outRecord = recordsForDate.find(a => a.type === 'out');
-      const leaveRecord = recordsForDate.find(a => ['izin', 'sakit', 'Cuti', 'dinas_luar', 'pending'].includes(a.type) || ['izin', 'Sakit', 'Cuti', 'Dinas Luar', 'pending'].includes(a.status));
+      const leaveRecord = empLeaveRecords.find(a => {
+        const startD = new Date(a.date);
+        const endDateStr = (typeof a.location === 'object' && a.location !== null) ? a.location.endDate : null;
+        const endD = endDateStr ? new Date(endDateStr) : startD;
+        const currD = new Date(date);
+        return currD >= startD && currD <= endD;
+      });
 
       if (leaveRecord) {
         if (leaveRecord.status === 'izin' || leaveRecord.type === 'izin') {
