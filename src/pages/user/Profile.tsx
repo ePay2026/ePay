@@ -19,6 +19,8 @@ export default function UserProfile() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const [employeeData, setEmployeeData] = useState<any>(null);
   const [alarmEnabled, setAlarmEnabled] = useState(localStorage.getItem('alarmEnabled') !== 'false');
+  const [alarmBefore, setAlarmBefore] = useState(parseInt(localStorage.getItem('alarmBefore') || '10', 10));
+  const [alarmAfter, setAlarmAfter] = useState(parseInt(localStorage.getItem('alarmAfter') || '15', 10));
 
   // Password change state
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -53,6 +55,19 @@ export default function UserProfile() {
     localStorage.setItem('alarmEnabled', String(checked));
     if (checked && 'Notification' in window) {
       Notification.requestPermission();
+    }
+  };
+
+  const handleUpdateAlarmSettings = (key: 'before' | 'after', value: string) => {
+    const numValue = parseInt(value, 10);
+    if (isNaN(numValue)) return;
+    
+    if (key === 'before') {
+      setAlarmBefore(numValue);
+      localStorage.setItem('alarmBefore', String(numValue));
+    } else {
+      setAlarmAfter(numValue);
+      localStorage.setItem('alarmAfter', String(numValue));
     }
   };
 
@@ -244,10 +259,35 @@ export default function UserProfile() {
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label className="text-slate-900 dark:text-slate-50">Alarm Pengingat Absensi</Label>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Pengingat 10 mnt sebelum & 15 mnt sesudah shift</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Aktifkan pengingat shift</p>
             </div>
             <Switch checked={alarmEnabled} onCheckedChange={handleToggleAlarm} />
           </div>
+          
+          {alarmEnabled && (
+            <div className="grid grid-cols-2 gap-4 pt-2">
+              <div className="space-y-1">
+                <Label htmlFor="alarmBefore" className="text-xs">Menit Sebelum Shift</Label>
+                <Input 
+                  id="alarmBefore" 
+                  type="number" 
+                  value={alarmBefore} 
+                  onChange={(e) => handleUpdateAlarmSettings('before', e.target.value)}
+                  className="h-8"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="alarmAfter" className="text-xs">Menit Sesudah Shift</Label>
+                <Input 
+                  id="alarmAfter" 
+                  type="number" 
+                  value={alarmAfter} 
+                  onChange={(e) => handleUpdateAlarmSettings('after', e.target.value)}
+                  className="h-8"
+                />
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
