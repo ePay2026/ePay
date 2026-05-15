@@ -34,6 +34,7 @@ async function startServer() {
       { id: 1, nip: '123456', name: 'Admin User', email: 'admin@puskesmas.com', role: 'admin', password: 'password', office: 'Kantor Induk', group: 'Superadmin' },
       { id: 2, nip: '654321', name: 'Regular User', email: 'user@puskesmas.com', role: 'user', password: 'password', office: 'Pustu A' },
     ],
+    units: [],
     employees: [
       { id: '1', name: 'Admin User', nip: '123456', office: 'Kantor Induk', email: 'admin@puskesmas.com', gender: 'Laki-laki', cluster: 'Klaster 1', unit: 'Manajemen' },
       { id: '2', name: 'Regular User', nip: '654321', office: 'Pustu A', email: 'user@puskesmas.com', gender: 'Perempuan', cluster: 'Klaster 2', unit: 'Pustu' }
@@ -970,6 +971,77 @@ async function startServer() {
 
   app.get('/api/users', (req, res) => {
     res.json(db.users.map(u => ({ id: u.id, nip: u.nip, name: u.name, role: u.role })));
+  });
+
+  // --- Units API ---
+  app.get('/api/units', async (req, res) => {
+    if (doc) {
+      try {
+        if (cache['units'] && Date.now() - cache['units'].timestamp < CACHE_DURATION) {
+          return res.json(cache['units'].data);
+        }
+        const sheet = await getOrCreateSheet('Units', ['id', 'name']);
+        if (sheet) {
+          const rows = await sheet.getRows();
+          const units = rows.map(row => ({
+            id: row.get('id'),
+            name: row.get('name')
+          }));
+          cache['units'] = { data: units, timestamp: Date.now() };
+          return res.json(units);
+        }
+      } catch (error) {
+        console.error('Error fetching units from spreadsheet:', error);
+      }
+    }
+    res.json(db.units || []);
+  });
+
+  app.post('/api/units', async (req, res) => {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ success: false, message: 'Nama unit wajib diisi' });
+
+    if (doc) {
+      try {
+        const sheet = await getOrCreateSheet('Units', ['id', 'name']);
+        if (sheet) {
+          await sheet.addRow({
+            id: Date.now().toString(),
+            name
+          });
+          delete cache['units'];
+        }
+      } catch (error) {
+        console.error('Error saving unit to spreadsheet:', error);
+        return res.status(500).json({ success: false, message: 'Gagal menyimpan unit' });
+      }
+    } else {
+      if (!db.units) db.units = [];
+      db.units.push({ id: Date.now().toString(), name });
+    }
+    res.json({ success: true, message: 'Unit berhasil ditambahkan' });
+  });
+
+  app.delete('/api/units/:id', async (req, res) => {
+    const { id } = req.params;
+    if (doc) {
+      try {
+        const sheet = await getSheet('Units');
+        if (sheet) {
+          const rows = await sheet.getRows();
+          const rowToDelete = rows.find(r => String(r.get('id')) === String(id));
+          if (rowToDelete) {
+            await rowToDelete.delete();
+            delete cache['units'];
+          }
+        }
+      } catch (error) {
+        console.error('Error deleting unit from spreadsheet:', error);
+      }
+    } else {
+        if (db.units) db.units = db.units.filter(u => String(u.id) !== String(id));
+    }
+    res.json({ success: true, message: 'Unit berhasil dihapus' });
   });
 
   // --- Locations API ---

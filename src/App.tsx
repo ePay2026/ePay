@@ -18,6 +18,7 @@ import UserProfile from './pages/user/Profile';
 // Admin pages
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminEmployees from './pages/admin/Employees';
+import AdminUnits from './pages/admin/Units';
 import AdminAttendance from './pages/admin/Attendance';
 import AdminSettings from './pages/admin/Settings';
 
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="employees" element={<AdminEmployees />} />
+          <Route path="units" element={<AdminUnits />} />
           <Route path="attendance" element={<AdminAttendance />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>

@@ -74,6 +74,7 @@ export default function AdminEmployees() {
 
   // State for Admins
   const [admins, setAdmins] = useState<{id: string, name: string, nip: string, email: string, phone: string, group: string, isActive: boolean, access: string[]}[]>([]);
+  const [units, setUnits] = useState<{id: string, name: string}[]>([]);
   const [isAddAdminOpen, setIsAddAdminOpen] = useState(false);
   const [newAdminName, setNewAdminName] = useState("");
   const [newAdminNip, setNewAdminNip] = useState("");
@@ -183,6 +184,18 @@ export default function AdminEmployees() {
       }
     };
     fetchShifts();
+    const fetchUnits = async () => {
+        try {
+          const response = await fetch('/api/units');
+          if (response.ok) {
+            const data = await response.json();
+            setUnits(data);
+          }
+        } catch (error) {
+          console.error('Failed to fetch units:', error);
+        }
+      };
+    fetchUnits();
   }, []);
 
   const handleAddEmployee = async () => {
@@ -807,15 +820,11 @@ export default function AdminEmployees() {
                           <SelectValue placeholder="Pilih Unit Kerja" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Manajemen">Manajemen</SelectItem>
-                          <SelectItem value="Rawat Jalan">Rawat Jalan</SelectItem>
-                          <SelectItem value="UGD/Rawat Inap">UGD/Rawat Inap</SelectItem>
-                          <SelectItem value="Poned">Poned</SelectItem>
-                          <SelectItem value="Pustu">Pustu</SelectItem>
-                          <SelectItem value="Polindes">Polindes</SelectItem>
-                          <SelectItem value="Ponkesdes">Ponkesdes</SelectItem>
-                          <SelectItem value="Armada">Armada</SelectItem>
-                          <SelectItem value="Kebersihan">Kebersihan</SelectItem>
+                          {units.length > 0 ? units.map(unit => (
+                            <SelectItem key={unit.id} value={unit.name}>{unit.name}</SelectItem>
+                          )) : (
+                            <SelectItem value="Manajemen">Manajemen</SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                     </div>
