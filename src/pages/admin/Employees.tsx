@@ -278,7 +278,7 @@ export default function AdminEmployees() {
       });
       const data = await response.json();
       if (response.ok) {
-        toast.success(data.message || "Perangkat berhasil direset");
+        toast.success("Mengahapus binding perangkat telah berhasil");
       } else {
         toast.error(data.message || "Gagal mereset perangkat");
       }

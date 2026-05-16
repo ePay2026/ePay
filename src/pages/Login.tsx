@@ -134,7 +134,8 @@ export default function Login() {
           navigate('/user');
         }
       } else {
-        toast.error(data.message || 'Login gagal');
+        const isDeviceError = data.message?.includes('Perangkat ini sudah digunakan') || data.message?.includes('Akun Anda terdaftar di perangkat lain');
+        toast.error(data.message || 'Login gagal', { duration: isDeviceError ? Infinity : 5000 });
       }
     } catch (error) {
       toast.error('Terjadi kesalahan server');
