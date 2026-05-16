@@ -743,16 +743,22 @@ async function startServer() {
       });
 
       // Scan for incomplete days
-      for (const date in attendanceByDate) {
-        if (date === today) continue; // Skip today
+      const shiftEnd = new Date(now);
+      shiftEnd.setHours(endHour, endMin, 0, 0);
+      const checkoutDeadline = new Date(shiftEnd.getTime() + 10 * 60000); // Shift end + 10 min tolerance
 
+      for (const date in attendanceByDate) {
+        // Process today only if past shift end + tolerance
+        if (date === today && now < checkoutDeadline) continue; 
+        
         const hasIn = attendanceByDate[date].some(r => r.get('type') === 'in');
         const hasOut = attendanceByDate[date].some(r => r.get('type') === 'out');
 
         if (hasIn && !hasOut) {
           // Trigger Auto-Checkout
           const checkoutDate = new Date(date);
-          checkoutDate.setHours(endHour - 1, endMin, 0, 0); // 1 hour before end
+          // Set to 1 hour before official end time
+          checkoutDate.setHours(endHour - 1, endMin, 0, 0); 
           
           await attendanceSheet.addRow({
             id: Date.now().toString() + Math.random(),
