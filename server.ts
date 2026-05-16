@@ -693,6 +693,60 @@ async function startServer() {
     const jakartaDate = nowJakarta.toISOString().split('T')[0];
     const jakartaTime = nowJakarta.toTimeString().split(' ')[0];
     
+    // If it's a check-in, validate against shift times
+    if (attendanceData.type === 'in') {
+      try {
+        const shiftsSheet = await getSheet('Shifts');
+        if (shiftsSheet) {
+          const rows = await shiftsSheet.getRows();
+          
+          // Get user's unit
+          let userUnit = '';
+          const usersSheet = await getSheet('Users');
+          if (usersSheet) {
+            const userRows = await usersSheet.getRows();
+            const userRow = userRows.find(r => String(r.get('nip')) === String(attendanceData.nip));
+            if (userRow) userUnit = userRow.get('unit') || '';
+          }
+          
+          if (!userUnit) {
+            const employeesSheet = await getSheet('Employees');
+            if (employeesSheet) {
+              const empRows = await employeesSheet.getRows();
+              const empRow = empRows.find(r => String(r.get('nip')) === String(attendanceData.nip));
+              if (empRow) userUnit = empRow.get('unit') || '';
+            }
+          }
+
+          // Find shift
+          const activeShifts = rows.filter(r => String(r.get('isActive')).toLowerCase() === 'true');
+          const unitShifts = activeShifts.filter(r => r.get('unit') === userUnit);
+          const generalShifts = activeShifts.filter(r => !r.get('unit') || r.get('unit') === '');
+          const shifts = unitShifts.length > 0 ? unitShifts : generalShifts;
+          
+          const targetShift = shifts[0]; // Simplified for now
+          
+          if (targetShift) {
+            const [startHour, startMin] = targetShift.get('startTime').split(':').map(Number);
+            const beforeMinutes = parseInt(targetShift.get('checkInBeforeMinutes') || '60');
+            const afterMinutes = parseInt(targetShift.get('checkInAfterMinutes') || '15');
+            
+            const shiftStart = new Date(nowJakarta);
+            shiftStart.setHours(startHour, startMin, 0, 0);
+            
+            const minCheckIn = new Date(shiftStart.getTime() - beforeMinutes * 60000);
+            const maxCheckIn = new Date(shiftStart.getTime() + afterMinutes * 60000);
+            
+            if (nowJakarta < minCheckIn || nowJakarta > maxCheckIn) {
+               return res.status(403).json({ success: false, message: 'Waktu sekarang di luar jam absen yang diizinkan.' });
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Attendance shift validation error:', err);
+      }
+    }
+    
     // Override based on type
     if (attendanceData.type === 'in') {
       attendanceData.date = jakartaDate;
