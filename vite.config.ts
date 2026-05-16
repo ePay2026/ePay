@@ -22,16 +22,24 @@ export default defineConfig(({mode}) => {
                 short_name: 'Absensi',
                 theme_color: '#3B82F6',
                 icons: [
-                    {
-                        src: 'pwa-192x192.svg',
-                        sizes: '192x192',
-                        type: 'image/svg+xml'
-                    },
-                    {
-                        src: 'pwa-512x512.svg',
-                        sizes: '512x512',
-                        type: 'image/svg+xml'
-                    }
+                            {
+                                src: 'logo.png',
+                                sizes: '512x512',
+                                type: 'image/png',
+                                purpose: 'any maskable'
+                            },
+                            {
+                                src: 'pwa-192x192.svg',
+                                sizes: '192x192',
+                                type: 'image/svg+xml',
+                                purpose: 'any maskable'
+                            },
+                            {
+                                src: 'pwa-512x512.svg',
+                                sizes: '512x512',
+                                type: 'image/svg+xml',
+                                purpose: 'any maskable'
+                            }
                 ]
             }
         })
