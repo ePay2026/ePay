@@ -990,7 +990,7 @@ export default function AdminAttendance() {
                   </TableHeader>
                   <TableBody>
                     {displayHarian.map((row, idx) => (
-                      <TableRow key={idx}>
+                      <TableRow key={`${row.nip}-${idx}`}>
                         <TableCell className="font-medium">{row.nama}</TableCell>
                         <TableCell>{row.nip}</TableCell>
                         <TableCell>{row.kantor}</TableCell>
@@ -1076,7 +1076,7 @@ export default function AdminAttendance() {
                           const { code, bgColor, onlyIn } = attInfo;
                           
                           return (
-                            <TableCell key={date} className={`text-center px-2 border-r ${bgColor || ''} ${onlyIn ? 'bg-yellow-100 dark:bg-yellow-900/30' : ''}`}>
+                            <TableCell key={`${emp.nip}-${date}`} className={`text-center px-2 border-r ${bgColor || ''} ${onlyIn ? 'bg-yellow-100 dark:bg-yellow-900/30' : ''}`}>
                                <span className={getStatusColor(code)}>{code}</span>
                             </TableCell>
                           );

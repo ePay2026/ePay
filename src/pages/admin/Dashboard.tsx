@@ -182,10 +182,10 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => {
+        {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={index}>
+            <Card key={stat.title}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-slate-600">
                   {stat.title}
@@ -210,8 +210,8 @@ export default function AdminDashboard() {
           <CardContent>
             {pendingLeaves.length > 0 ? (
               <ul className="space-y-3">
-                {pendingLeaves.map((leave, i) => (
-                  <li key={i} className="flex justify-between items-center text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border">
+                {pendingLeaves.map((leave) => (
+                  <li key={leave.id} className="flex justify-between items-center text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border">
                     <div>
                       <span className="font-medium">{leave.name}</span>
                       <span className="block text-xs text-slate-500 hover:text-slate-700 cursor-help" title={typeof leave.location === 'object' && leave.location !== null ? leave.location.reason : (leave.location || "Tanpa alasan")}>
@@ -244,8 +244,8 @@ export default function AdminDashboard() {
           <CardContent>
             {notCheckedOut.length > 0 ? (
               <ul className="space-y-2">
-                {notCheckedOut.map((emp, i) => (
-                  <li key={i} className="text-sm text-slate-700">{emp.name}</li>
+                {notCheckedOut.map((emp) => (
+                  <li key={emp.nip} className="text-sm text-slate-700">{emp.name}</li>
                 ))}
               </ul>
             ) : (
