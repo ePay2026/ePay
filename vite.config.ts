@@ -14,6 +14,9 @@ export default defineConfig(({mode}) => {
         VitePWA({
             registerType: 'autoUpdate',
             includeAssets: ['logo.png', 'pwa-192x192.svg', 'pwa-512x512.svg'],
+            workbox: {
+                maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+            },
             manifest: {
                 name: 'Absensi Payaman',
                 short_name: 'Absensi',

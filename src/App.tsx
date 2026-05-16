@@ -8,6 +8,7 @@ import UserLayout from './layouts/UserLayout';
 import AdminLayout from './layouts/AdminLayout';
 import Login from './pages/Login';
 import ResetPassword from './pages/ResetPassword';
+import { PWAInstallBanner } from './components/PWAInstallBanner';
 
 // User pages
 import UserHome from './pages/user/Home';
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>
+      <PWAInstallBanner />
     </Router>
   );
 }
