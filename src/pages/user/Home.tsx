@@ -54,9 +54,23 @@ export default function UserHome() {
   const [selectedFriendNip, setSelectedFriendNip] = useState<string>('');
   const [replacingFriendNip, setReplacingFriendNip] = useState<string | null>(localStorage.getItem('replacingFriendNip'));
 
+  const [serverTime, setServerTime] = useState<Date | null>(null);
+
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user') || '{}');
-    setUser(userData);
+    const fetchServerTime = async () => {
+      try {
+        const response = await fetch('/api/server-time');
+        if (response.ok) {
+          const data = await response.json();
+          setServerTime(new Date(data.fullDate));
+        }
+      } catch(e) {
+        console.error('Failed to fetch server time', e);
+      }
+    };
+    fetchServerTime();
+    const interval = setInterval(fetchServerTime, 60000); // sync every minute
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -354,7 +368,8 @@ export default function UserHome() {
           return;
         }
 
-        const now = new Date();
+        const deviceNow = new Date();
+        const now = serverTime ? new Date(deviceNow.getTime() + (serverTime.getTime() - deviceNow.getTime())) : deviceNow;
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
         let upcomingShift = null;
@@ -474,7 +489,8 @@ export default function UserHome() {
         
         if (!targetShift) return;
 
-        const now = new Date();
+        const deviceNow = new Date();
+        const now = serverTime ? new Date(deviceNow.getTime() + (serverTime.getTime() - deviceNow.getTime())) : deviceNow;
         let adjustedEndTime = targetShift.endTime;
         
         if (now.getDay() === 5 && targetShift.fridayEndTime) {
@@ -899,14 +915,17 @@ export default function UserHome() {
         }
       }
 
-      const response = await fetch('/api/attendance', {
+      const now = serverTime || new Date();
+    const formattedDate = format(now, 'yyyy-MM-dd');
+
+    const response = await fetch('/api/attendance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nip: submitNip,
           name: submitName,
-          date: submitType === 'out' ? (localStorage.getItem('lastCheckInDate') || format(new Date(), 'yyyy-MM-dd')) : format(new Date(), 'yyyy-MM-dd'),
-          time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+          date: submitType === 'out' ? (localStorage.getItem('lastCheckInDate') || formattedDate) : formattedDate,
+          time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
           type: submitType,
           location: { lat: location.lat, lng: location.lng, address: address },
           status: (isTambahJaga || replacingFriendNip) ? 'Hadir (Ganti Jaga)' : (isEarlyCheckout ? 'Hadir (Pulang Cepat)' : 'Hadir'),
