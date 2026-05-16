@@ -76,6 +76,15 @@ export default function UserHome() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+        if (userData.nip) {
+          fetch('/api/attendance/auto-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nip: userData.nip })
+          }).catch(console.error);
+        }
+
         const [locRes, setRes, attRes, shiftRes, annRes, empRes] = await Promise.all([
           fetch('/api/locations'),
           fetch('/api/settings'),

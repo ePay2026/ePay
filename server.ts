@@ -685,6 +685,96 @@ async function startServer() {
   });
 
   // --- Attendance API ---
+  app.post('/api/attendance/auto-checkout', async (req, res) => {
+    const { nip } = req.body;
+    
+    try {
+      const attendanceSheet = await getSheet('Attendance');
+      const shiftsSheet = await getSheet('Shifts');
+      
+      if (!attendanceSheet || !shiftsSheet) {
+        return res.status(500).json({ success: false, message: 'Data tidak lengkap' });
+      }
+
+      const attendanceRows = await attendanceSheet.getRows();
+      const shiftRows = await shiftsSheet.getRows();
+      
+      const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+      const today = now.toISOString().split('T')[0];
+      
+      // Get user unit
+      let userUnit = '';
+      const usersSheet = await getSheet('Users');
+      if (usersSheet) {
+        const userRows = await usersSheet.getRows();
+        const userRow = userRows.find(r => String(r.get('nip')) === String(nip));
+        if (userRow) userUnit = userRow.get('unit') || '';
+      }
+      
+      if (!userUnit) {
+        const employeesSheet = await getSheet('Employees');
+        if (employeesSheet) {
+          const empRows = await employeesSheet.getRows();
+          const empRow = empRows.find(r => String(r.get('nip')) === String(nip));
+          if (empRow) userUnit = empRow.get('unit') || '';
+        }
+      }
+
+      // Find relevant shift
+      const activeShifts = shiftRows.filter(r => String(r.get('isActive')).toLowerCase() === 'true');
+      const unitShifts = activeShifts.filter(r => r.get('unit') === userUnit);
+      const generalShifts = activeShifts.filter(r => !r.get('unit') || r.get('unit') === '');
+      const shifts = unitShifts.length > 0 ? unitShifts : generalShifts;
+      const targetShift = shifts[0];
+      
+      if (!targetShift) return res.json({ success: true, message: 'Tidak ada shift aktif' });
+
+      const [endHour, endMin] = targetShift.get('endTime').split(':').map(Number);
+
+      // Find Attendance records for this NIP
+      const userAttendance = attendanceRows.filter(r => String(r.get('nip')) === String(nip));
+
+      // Group by date
+      const attendanceByDate: Record<string, any[]> = {};
+      userAttendance.forEach(row => {
+        const date = row.get('date');
+        if (!attendanceByDate[date]) attendanceByDate[date] = [];
+        attendanceByDate[date].push(row);
+      });
+
+      // Scan for incomplete days
+      for (const date in attendanceByDate) {
+        if (date === today) continue; // Skip today
+
+        const hasIn = attendanceByDate[date].some(r => r.get('type') === 'in');
+        const hasOut = attendanceByDate[date].some(r => r.get('type') === 'out');
+
+        if (hasIn && !hasOut) {
+          // Trigger Auto-Checkout
+          const checkoutDate = new Date(date);
+          checkoutDate.setHours(endHour - 1, endMin, 0, 0); // 1 hour before end
+          
+          await attendanceSheet.addRow({
+            id: Date.now().toString() + Math.random(),
+            nip: nip,
+            name: userAttendance[0].get('name'),
+            date: date,
+            time: `${String(checkoutDate.getHours()).padStart(2, '0')}:${String(checkoutDate.getMinutes()).padStart(2, '0')}`,
+            type: 'out',
+            status: 'Hadir (Pulang Cepat)',
+            location: 'System Auto-Checkout'
+          });
+          delete cache['attendance'];
+        }
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Auto checkout error:', error);
+      res.status(500).json({ success: false, message: 'Auto checkout failed' });
+    }
+  });
+
   app.post('/api/attendance', async (req, res) => {
     const attendanceData = req.body;
     
