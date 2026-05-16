@@ -94,6 +94,7 @@ export default function AdminAttendance() {
 
   const fetchAttendance = async () => {
     try {
+      await fetch('/api/attendance/fix-sakit');
       const response = await fetch('/api/attendance');
       if (response.ok) {
         const data = await response.json();
@@ -350,8 +351,15 @@ export default function AdminAttendance() {
           statusInfo.onlyIn = false;
           
           if (outRecord.status === 'Hadir (Pulang Cepat)') {
-              statusInfo.code = 'PC';
-              statusInfo.bgColor = 'bg-orange-100 dark:bg-orange-900/30';
+              if (outRecord.location === 'System Auto-Checkout') {
+                 // Auto checkout (forgot to check out)
+                 statusInfo.code = 'M';
+                 statusInfo.bgColor = ''; // No block color
+              } else {
+                 // Manual Pulang Cepat
+                 statusInfo.code = 'PC';
+                 statusInfo.bgColor = 'bg-orange-100 dark:bg-orange-900/30';
+              }
           }
         } else {
           // Only 'in' record
@@ -765,7 +773,8 @@ export default function AdminAttendance() {
 
   const handleApproveLeave = async (id: string, type: string) => {
     let finalStatus = 'Hadir'; // fallback
-    if (type === 'izin' || type === 'sakit') finalStatus = 'izin';
+    if (type === 'izin') finalStatus = 'izin';
+    else if (type === 'sakit') finalStatus = 'Sakit';
     else if (type === 'Cuti' || type === 'cuti') finalStatus = 'Cuti';
     else if (type === 'dinas_luar') finalStatus = 'Dinas Luar';
     

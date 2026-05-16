@@ -886,6 +886,39 @@ async function startServer() {
     res.json({ success: true, message: 'Absensi berhasil dicatat' });
   });
 
+  // Maintenance Endpoint to fix 'sakit' data
+  app.get('/api/attendance/fix-sakit', async (req, res) => {
+    try {
+      const sheet = await getSheet('Attendance');
+      if (sheet) {
+        const rows = await sheet.getRows();
+        let changed = 0;
+        for (const row of rows) {
+           const type = row.get('type');
+           const status = row.get('status');
+           
+           if ((type === 'sakit' || status === 'izin sakit') && status !== 'Sakit') {
+               row.set('status', 'Sakit');
+               row.set('type', 'sakit'); // Normalize type as well if needed
+               await row.save();
+               changed++;
+           } else if (type === 'izin' && status !== 'izin') {
+               row.set('status', 'izin');
+               await row.save();
+               changed++;
+           }
+        }
+        delete cache['attendance'];
+        res.json({ success: true, message: `Fixed ${changed} records` });
+      } else {
+        res.status(500).json({ success: false, message: 'Sheet not found' });
+      }
+    } catch (e) {
+       console.error('Error fixing sakit data:', e);
+       res.status(500).json({ success: false, message: 'Failed' });
+    }
+  });
+
   app.put('/api/attendance/:id', async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;

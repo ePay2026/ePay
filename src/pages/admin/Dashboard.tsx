@@ -40,7 +40,8 @@ export default function AdminDashboard() {
     if (action === 'reject') {
       finalStatus = 'Ditolak';
     } else {
-      if (type === 'izin' || type === 'sakit') finalStatus = 'izin';
+      if (type === 'izin') finalStatus = 'izin';
+      else if (type === 'sakit') finalStatus = 'Sakit';
       else if (type === 'Cuti' || type === 'cuti') finalStatus = 'Cuti';
       else if (type === 'dinas_luar') finalStatus = 'Dinas Luar';
     }
@@ -62,6 +63,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        await fetch('/api/attendance/fix-sakit'); // Fix old data quietly
         const [empRes, attRes, setRes, shiftRes] = await Promise.all([
           fetch('/api/employees'),
           fetch('/api/attendance'),
