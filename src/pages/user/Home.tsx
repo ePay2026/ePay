@@ -77,6 +77,7 @@ export default function UserHome() {
     const fetchData = async () => {
       try {
         const userData = JSON.parse(localStorage.getItem('user') || '{}');
+        setUser(userData);
         if (userData.nip) {
           fetch('/api/attendance/auto-checkout', {
             method: 'POST',
