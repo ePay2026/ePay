@@ -674,9 +674,23 @@ async function startServer() {
     res.json(db.attendance);
   });
 
+  // --- Time API ---
+  app.get('/api/server-time', (req, res) => {
+    const now = new Date();
+    res.json({
+      date: now.toISOString().split('T')[0],
+      time: now.toLocaleTimeString('id-ID', { hour12: false }),
+      fullDate: now.toISOString()
+    });
+  });
+
+  // --- Attendance API ---
   app.post('/api/attendance', async (req, res) => {
     const attendanceData = req.body;
-    // attendanceData: { nip, name, date, time, type, location, status, photoUrl }
+    // Ignore client-provided date and time
+    const now = new Date();
+    attendanceData.date = now.toISOString().split('T')[0];
+    attendanceData.time = now.toLocaleTimeString('id-ID', { hour12: false });
     
     if (doc) {
       try {
@@ -1060,7 +1074,7 @@ async function startServer() {
             kecamatan: row.get('kecamatan') || '',
             kabupaten: row.get('kabupaten') || '',
             coordinates: row.get('coordinates'),
-            radius: row.get('radius') || 100
+            radius: row.get('radius') || 250
           }));
           cache['locations'] = { data: locations, timestamp: Date.now() };
           return res.json(locations);
@@ -1070,8 +1084,8 @@ async function startServer() {
       }
     }
     res.json([
-      { id: "1", desa: "Kantor Induk", kecamatan: "", kabupaten: "", coordinates: "-7.1234, 112.1234", radius: 100 },
-      { id: "2", desa: "Pustu A", kecamatan: "", kabupaten: "", coordinates: "-7.1235, 112.1235", radius: 100 }
+      { id: "1", desa: "Kantor Induk", kecamatan: "", kabupaten: "", coordinates: "-7.1234, 112.1234", radius: 250 },
+      { id: "2", desa: "Pustu A", kecamatan: "", kabupaten: "", coordinates: "-7.1235, 112.1235", radius: 250 }
     ]);
   });
 
@@ -1088,7 +1102,7 @@ async function startServer() {
             kecamatan: location.kecamatan || '',
             kabupaten: location.kabupaten || '',
             coordinates: location.coordinates || '',
-            radius: location.radius || 100
+            radius: location.radius || 250
           });
           delete cache['locations'];
         }
