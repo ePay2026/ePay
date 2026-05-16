@@ -687,10 +687,21 @@ async function startServer() {
   // --- Attendance API ---
   app.post('/api/attendance', async (req, res) => {
     const attendanceData = req.body;
-    // Ignore client-provided date and time
-    const now = new Date();
-    attendanceData.date = now.toISOString().split('T')[0];
-    attendanceData.time = now.toLocaleTimeString('id-ID', { hour12: false });
+    
+    // Get server time in Asia/Jakarta
+    const nowJakarta = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+    const jakartaDate = nowJakarta.toISOString().split('T')[0];
+    const jakartaTime = nowJakarta.toTimeString().split(' ')[0];
+    
+    // Override based on type
+    if (attendanceData.type === 'in') {
+      attendanceData.date = jakartaDate;
+      attendanceData.time = jakartaTime;
+    } else {
+      // For check-out, only override time to prevent manipulation, 
+      // but keep date to allow for night shifts (assuming client sends correct date).
+      attendanceData.time = jakartaTime;
+    }
     
     if (doc) {
       try {
