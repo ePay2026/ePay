@@ -13,7 +13,7 @@ export default defineConfig(({mode}) => {
         tailwindcss(),
         VitePWA({
             registerType: 'autoUpdate',
-            includeAssets: ['logo.png', 'pwa-192x192.svg', 'pwa-512x512.svg'],
+            includeAssets: ['logo.png'],
             workbox: {
                 maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
             },
@@ -22,24 +22,24 @@ export default defineConfig(({mode}) => {
                 short_name: 'Absensi',
                 theme_color: '#3B82F6',
                 icons: [
-                            {
-                                src: 'logo.png',
-                                sizes: '512x512',
-                                type: 'image/png',
-                                purpose: 'any maskable'
-                            },
-                            {
-                                src: 'pwa-192x192.svg',
-                                sizes: '192x192',
-                                type: 'image/svg+xml',
-                                purpose: 'any maskable'
-                            },
-                            {
-                                src: 'pwa-512x512.svg',
-                                sizes: '512x512',
-                                type: 'image/svg+xml',
-                                purpose: 'any maskable'
-                            }
+                    {
+                        src: 'logo.png',
+                        sizes: '192x192',
+                        type: 'image/png',
+                        purpose: 'any'
+                    },
+                    {
+                        src: 'logo.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'any'
+                    },
+                    {
+                        src: 'logo.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'maskable'
+                    }
                 ]
             }
         })
