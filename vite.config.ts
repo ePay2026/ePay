@@ -15,7 +15,8 @@ export default defineConfig(({mode}) => {
             registerType: 'autoUpdate',
             includeAssets: ['logo.png'],
             workbox: {
-                maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+                maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+                globPatterns: ['**/*.{js,css,html,ico,png,svg}']
             },
             manifest: {
                 name: 'Absensi Payaman',
