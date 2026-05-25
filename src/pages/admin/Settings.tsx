@@ -47,6 +47,8 @@ export default function AdminSettings() {
   // State for Location Settings
   const [locations, setLocations] = useState<{ id: string; desa: string; kecamatan: string; kabupaten: string; coordinates: string; radius: number }[]>([]);
   const [isSavingLocations, setIsSavingLocations] = useState(false);
+  const [isExportingUsers, setIsExportingUsers] = useState(false);
+  const [isExportingAbsensi, setIsExportingAbsensi] = useState(false);
 
   // Load from API on mount
   useEffect(() => {
@@ -130,39 +132,101 @@ export default function AdminSettings() {
   };
 
   const handleExportUsers = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Data User');
-    worksheet.addRow(['ID', 'Nama', 'Email', 'Role']);
-    worksheet.addRow(['1', 'Admin User', 'admin@puskesmas.com', 'Admin']);
-    worksheet.addRow(['2', 'Regular User', 'user@puskesmas.com', 'User']);
-    
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Data_User_${format(new Date(), 'yyyy-MM-dd')}.xlsx`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    toast.success("Data User berhasil diekspor!");
+    setIsExportingUsers(true);
+    try {
+      const res = await fetch('/api/employees');
+      if (!res.ok) throw new Error('Gagal mengambil data user');
+      const usersInfo = await res.json();
+      
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Data User');
+      worksheet.addRow(['ID', 'Nama', 'NIP', 'Email', 'Gender', 'Cluster', 'Unit', 'Office 1 (Desa)', 'Office 2 (Desa)']);
+      
+      usersInfo.forEach((u: any, index: number) => {
+        worksheet.addRow([
+          index + 1,
+          u.name || '',
+          u.nip || '',
+          u.email || '',
+          u.gender || '',
+          u.cluster || '',
+          u.unit || '',
+          u.office || '',
+          u.office2 || ''
+        ]);
+      });
+      
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Data_User_${format(new Date(), 'yyyy-MM-dd')}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      toast.success("Data User berhasil diekspor!");
+    } catch (e: any) {
+      toast.error(e.message || "Gagal mengekspor data user");
+    } finally {
+      setIsExportingUsers(false);
+    }
   };
 
   const handleExportAbsensi = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Data Absensi');
-    worksheet.addRow(['Tanggal', 'Nama', 'Status', 'Jam Masuk']);
-    worksheet.addRow(['2026-04-01', 'Admin User', 'Hadir', '07:45']);
-    worksheet.addRow(['2026-04-01', 'Regular User', 'Hadir', '07:50']);
-    
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Data_Absensi_Semua_${format(new Date(), 'yyyy-MM-dd')}.xlsx`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    toast.success("Data Absensi berhasil diekspor!");
+    setIsExportingAbsensi(true);
+    try {
+      const res = await fetch('/api/attendance');
+      if (!res.ok) throw new Error('Gagal mengambil data absensi');
+      const attendanceInfo = await res.json();
+      
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Data Absensi');
+      worksheet.addRow(['No', 'Tanggal', 'NIP', 'Nama', 'Jam Masuk', 'Jam Pulang', 'Status', 'Tipe', 'Lokasi Masuk', 'Lokasi Pulang']);
+      
+      attendanceInfo.forEach((a: any, index: number) => {
+        const timeIn = a.time?.in || '';
+        const timeOut = a.time?.out || '';
+        const locIn = a.location?.in || '';
+        const locOut = a.location?.out || '';
+        
+        let locInStr = typeof locIn === 'string' ? locIn : '';
+        if (typeof locIn === 'object' && locIn !== null) {
+            locInStr = `Lat: ${locIn.lat}, Lng: ${locIn.lng}`;
+        }
+        
+        let locOutStr = typeof locOut === 'string' ? locOut : '';
+        if (typeof locOut === 'object' && locOut !== null) {
+            locOutStr = `Lat: ${locOut.lat}, Lng: ${locOut.lng}`;
+        }
+
+        worksheet.addRow([
+          index + 1,
+          a.date || '',
+          a.nip || '',
+          a.name || '',
+          timeIn,
+          timeOut,
+          a.status || '',
+          a.type || '',
+          locInStr,
+          locOutStr
+        ]);
+      });
+      
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Data_Absensi_Semua_${format(new Date(), 'yyyy-MM-dd')}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      toast.success("Data Absensi berhasil diekspor!");
+    } catch (e: any) {
+      toast.error(e.message || "Gagal mengekspor data absensi");
+    } finally {
+      setIsExportingAbsensi(false);
+    }
   };
 
   return (
@@ -409,8 +473,12 @@ export default function AdminSettings() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex gap-4">
-                <Button variant="outline" onClick={handleExportUsers}>Export Data User (Excel)</Button>
-                <Button variant="outline" onClick={handleExportAbsensi}>Export Data Absensi (Excel)</Button>
+                <Button variant="outline" onClick={handleExportUsers} disabled={isExportingUsers}>
+                  {isExportingUsers ? "Exporting Data User..." : "Export Data User (Excel)"}
+                </Button>
+                <Button variant="outline" onClick={handleExportAbsensi} disabled={isExportingAbsensi}>
+                  {isExportingAbsensi ? "Exporting Data Absensi..." : "Export Data Absensi (Excel)"}
+                </Button>
               </div>
             </CardContent>
           </Card>
