@@ -1334,7 +1334,7 @@ async function startServer() {
         if (cache['shifts'] && Date.now() - cache['shifts'].timestamp < CACHE_DURATION) {
           return res.json(cache['shifts'].data);
         }
-        const sheet = await getOrCreateSheet('Shifts', ['id', 'name', 'startTime', 'endTime', 'fridayEndTime', 'saturdayEndTime', 'checkInBeforeMinutes', 'checkInAfterMinutes', 'checkOutBeforeMinutes', 'checkOutAfterMinutes', 'crossesMidnight', 'isActive', 'unit']);
+        const sheet = await getOrCreateSheet('Shifts', ['id', 'name', 'startTime', 'endTime', 'fridayEndTime', 'saturdayEndTime', 'checkInBeforeMinutes', 'checkInAfterMinutes', 'checkOutBeforeMinutes', 'checkOutAfterMinutes', 'crossesMidnight', 'isActive', 'unit', 'allowSunday', 'allowHoliday']);
         if (sheet) {
           const rows = await sheet.getRows();
           const shifts = rows.map(row => ({
@@ -1350,7 +1350,9 @@ async function startServer() {
             checkOutAfterMinutes: parseInt(row.get('checkOutAfterMinutes') || '120'),
             crossesMidnight: String(row.get('crossesMidnight')).toLowerCase() === 'true',
             isActive: String(row.get('isActive')).toLowerCase() === 'true',
-            unit: row.get('unit') || ''
+            unit: row.get('unit') || '',
+            allowSunday: row.get('allowSunday') === undefined ? false : String(row.get('allowSunday')).toLowerCase() === 'true',
+            allowHoliday: row.get('allowHoliday') === undefined ? false : String(row.get('allowHoliday')).toLowerCase() === 'true'
           }));
           cache['shifts'] = { timestamp: Date.now(), data: shifts };
           return res.json(shifts);
@@ -1360,8 +1362,8 @@ async function startServer() {
       }
     }
     res.json([
-      { id: "1", name: "Pagi", startTime: "08:00", endTime: "16:00", fridayEndTime: "10:50", saturdayEndTime: "12:30", checkInBeforeMinutes: 60, checkInAfterMinutes: 15, checkOutBeforeMinutes: 10, checkOutAfterMinutes: 120, crossesMidnight: false, isActive: true, unit: "" },
-      { id: "2", name: "Malam", startTime: "20:00", endTime: "04:00", fridayEndTime: "", saturdayEndTime: "", checkInBeforeMinutes: 60, checkInAfterMinutes: 15, checkOutBeforeMinutes: 10, checkOutAfterMinutes: 120, crossesMidnight: true, isActive: true, unit: "" }
+      { id: "1", name: "Pagi", startTime: "08:00", endTime: "16:00", fridayEndTime: "10:50", saturdayEndTime: "12:30", checkInBeforeMinutes: 60, checkInAfterMinutes: 15, checkOutBeforeMinutes: 10, checkOutAfterMinutes: 120, crossesMidnight: false, isActive: true, unit: "", allowSunday: false, allowHoliday: false },
+      { id: "2", name: "Malam", startTime: "20:00", endTime: "04:00", fridayEndTime: "", saturdayEndTime: "", checkInBeforeMinutes: 60, checkInAfterMinutes: 15, checkOutBeforeMinutes: 10, checkOutAfterMinutes: 120, crossesMidnight: true, isActive: true, unit: "", allowSunday: true, allowHoliday: true }
     ]);
   });
 
@@ -1369,7 +1371,7 @@ async function startServer() {
     const shift = req.body;
     if (doc) {
       try {
-        const sheet = await getOrCreateSheet('Shifts', ['id', 'name', 'startTime', 'endTime', 'fridayEndTime', 'saturdayEndTime', 'checkInBeforeMinutes', 'checkInAfterMinutes', 'checkOutBeforeMinutes', 'checkOutAfterMinutes', 'crossesMidnight', 'isActive', 'unit']);
+        const sheet = await getOrCreateSheet('Shifts', ['id', 'name', 'startTime', 'endTime', 'fridayEndTime', 'saturdayEndTime', 'checkInBeforeMinutes', 'checkInAfterMinutes', 'checkOutBeforeMinutes', 'checkOutAfterMinutes', 'crossesMidnight', 'isActive', 'unit', 'allowSunday', 'allowHoliday']);
         if (sheet) {
           await sheet.addRow({
             ...shift,
@@ -1379,7 +1381,9 @@ async function startServer() {
             checkOutAfterMinutes: (shift.checkOutAfterMinutes || 120).toString(),
             crossesMidnight: shift.crossesMidnight.toString(),
             isActive: shift.isActive.toString(),
-            unit: shift.unit || ''
+            unit: shift.unit || '',
+            allowSunday: (shift.allowSunday || false).toString(),
+            allowHoliday: (shift.allowHoliday || false).toString()
           });
           delete cache['shifts'];
         }
@@ -1432,6 +1436,8 @@ async function startServer() {
             rowToUpdate.set('crossesMidnight', shift.crossesMidnight.toString());
             rowToUpdate.set('isActive', shift.isActive.toString());
             rowToUpdate.set('unit', shift.unit || '');
+            rowToUpdate.set('allowSunday', (shift.allowSunday || false).toString());
+            rowToUpdate.set('allowHoliday', (shift.allowHoliday || false).toString());
             await rowToUpdate.save();
             delete cache['shifts'];
           }

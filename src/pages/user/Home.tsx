@@ -53,6 +53,9 @@ export default function UserHome() {
   const [employees, setEmployees] = useState<any[]>([]);
   const [selectedFriendNip, setSelectedFriendNip] = useState<string>('');
   const [replacingFriendNip, setReplacingFriendNip] = useState<string | null>(localStorage.getItem('replacingFriendNip'));
+  const [holidays, setHolidays] = useState<any[]>([]);
+  const [isRestDay, setIsRestDay] = useState(false);
+  const [restDayReason, setRestDayReason] = useState('');
 
   const [serverTime, setServerTime] = useState<Date | null>(null);
 
@@ -86,18 +89,25 @@ export default function UserHome() {
           }).catch(console.error);
         }
 
-        const [locRes, setRes, attRes, shiftRes, annRes, empRes] = await Promise.all([
+        const [locRes, setRes, attRes, shiftRes, annRes, empRes, holRes] = await Promise.all([
           fetch('/api/locations'),
           fetch('/api/settings'),
           fetch('/api/attendance'),
           fetch('/api/shifts'),
           fetch('/api/announcements'),
-          fetch('/api/employees')
+          fetch('/api/employees'),
+          fetch('/api/holidays')
         ]);
         
         if (locRes.ok) {
           const data = await locRes.json();
           setLocations(data);
+        }
+
+        let holidaysData: any[] = [];
+        if (holRes && holRes.ok) {
+           holidaysData = await holRes.json();
+           setHolidays(holidaysData);
         }
         let employeesData: any[] = [];
         if (empRes && empRes.ok) {
@@ -364,6 +374,43 @@ export default function UserHome() {
   }, [hasCheckedIn, hasCheckedOut, shifts, checkInTime, user, employees]);
 
   useEffect(() => {
+    if (shifts.length > 0 && user) {
+      const activeShifts = resolveActiveShifts(shifts, user, employees);
+      const shift = activeShifts.length > 0 ? activeShifts[0] : shifts[0];
+      
+      const today = new Date();
+      // Adjust with serverTime if available, but for day check local date is mostly fine
+      const currentDate = serverTime ? new Date(today.getTime() + (serverTime.getTime() - today.getTime())) : today;
+      const dayOfWeek = currentDate.getDay(); // 0 is Sunday
+      const dateString = format(currentDate, 'yyyy-MM-dd');
+      
+      let restParams = false;
+      let reason = '';
+
+      if (dayOfWeek === 0 && shift.allowSunday === false) {
+        restParams = true;
+        reason = 'Hari ini adalah hari Minggu, Anda sedang dalam waktu libur.';
+      } else {
+        // Check if today is a holiday
+        const todayHoliday = holidays.find(h => {
+             const hDate = new Date(h.date);
+             return format(hDate, 'yyyy-MM-dd') === dateString;
+        });
+
+        if (todayHoliday && shift.allowHoliday === false) {
+          restParams = true;
+          reason = `Hari ini adalah hari libur: ${todayHoliday.name}. Silahkan manfaatkan hari libur Anda dengan istirahat atau berlibur.`;
+        }
+      }
+
+      setIsRestDay(restParams);
+      if (restParams) {
+        setRestDayReason(reason);
+      }
+    }
+  }, [shifts, holidays, user, employees, serverTime]);
+
+  useEffect(() => {
     let interval: NodeJS.Timeout;
     
     // Timer untuk Absen Masuk (jika belum absen masuk)
@@ -416,21 +463,24 @@ export default function UserHome() {
           
           // Alarm logic
           const diffMsStart = upcomingShiftStart.getTime() - now.getTime();
-          if (diffMsStart <= 10 * 60000 && diffMsStart > 9 * 60000) {
+          const alarmBefore = parseInt(localStorage.getItem('alarmBefore') || '10', 10);
+          const alarmAfter = parseInt(localStorage.getItem('alarmAfter') || '15', 10);
+
+          if (diffMsStart <= alarmBefore * 60000 && diffMsStart > (alarmBefore - 1) * 60000) {
             checkAndFireAlarm(
               'Pengingat Absensi', 
-              'Shift Anda akan mulai dalam 10 menit. Jangan lupa absen masuk!', 
-              'masuk_10'
+              `Shift Anda akan mulai dalam ${alarmBefore} menit. Jangan lupa absen masuk!`, 
+              `masuk_${alarmBefore}`
             );
           }
 
-          if (diffMsStart <= -15 * 60000 && diffMsStart > -16 * 60000 && !hasCheckedIn) {
+          if (diffMsStart <= -alarmAfter * 60000 && diffMsStart > -(alarmAfter + 1) * 60000 && !hasCheckedIn) {
             const day = now.getDay();
             if (day >= 1 && day <= 5) {
               checkAndFireAlarm(
                 'Peringatan Keterlambatan', 
-                'Anda belum absen masuk dan shift sudah berjalan 15 menit!', 
-                'telat_15'
+                `Anda belum absen masuk dan shift sudah berjalan ${alarmAfter} menit!`, 
+                `telat_${alarmAfter}`
               );
             }
           }
@@ -523,6 +573,26 @@ export default function UserHome() {
         
         const diff = shiftEnd.getTime() - now.getTime();
         
+        // Checkout alarms
+        const alarmBefore = parseInt(localStorage.getItem('alarmBefore') || '10', 10);
+        const alarmAfter = parseInt(localStorage.getItem('alarmAfter') || '15', 10);
+
+        if (diff <= alarmBefore * 60000 && diff > (alarmBefore - 1) * 60000) {
+          checkAndFireAlarm(
+            'Pengingat Absensi Pulang', 
+            `Shift Anda akan berakhir dalam ${alarmBefore} menit. Bersiap absen pulang!`, 
+            `pulang_${alarmBefore}`
+          );
+        }
+
+        if (diff <= -alarmAfter * 60000 && diff > -(alarmAfter + 1) * 60000 && !hasCheckedOut) {
+          checkAndFireAlarm(
+            'Peringatan Lupa Absen Pulang', 
+            `Shift Anda sudah berakhir ${alarmAfter} menit lalu. Anda belum absen pulang!`, 
+            `telat_pulang_${alarmAfter}`
+          );
+        }
+
         if (diff > 0) {
           const hours = Math.floor(diff / (1000 * 60 * 60));
           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -1051,6 +1121,13 @@ export default function UserHome() {
                   {leaveType === 'izin' && "Semoga segala urusannya dimudahkan"}
                   {leaveType === 'Cuti' && "Semoga hari - hari cuti anda bermanfaat"}
                   {leaveType === 'dinas_luar' && "Selamat menjalankan dinas luar, tetap semangat dan jaga kesehatan!"}
+                </AlertDescription>
+              </Alert>
+            ) : isRestDay && !hasCheckedIn && !hasCheckedOut && !isTambahJaga ? (
+              <Alert className="bg-blue-50 dark:bg-blue-950/50 border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-400">
+                <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-500" />
+                <AlertDescription className="text-lg font-medium text-center py-4">
+                  {restDayReason}
                 </AlertDescription>
               </Alert>
             ) : hasCheckedOut && !isTambahJaga ? (

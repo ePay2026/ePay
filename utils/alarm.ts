@@ -1,3 +1,5 @@
+import { toast } from 'sonner';
+
 export const checkAndFireAlarm = (title: string, body: string, alarmId: string) => {
   const alarmEnabled = localStorage.getItem('alarmEnabled') !== 'false';
   if (!alarmEnabled) return;
@@ -6,6 +8,19 @@ export const checkAndFireAlarm = (title: string, body: string, alarmId: string) 
   const todayDate = new Date().toDateString();
 
   if (lastFired === todayDate) return;
+
+  try {
+    toast(title, {
+      description: body,
+      duration: 10000,
+    });
+
+    if ('vibrate' in navigator) {
+      navigator.vibrate([200, 100, 200, 100, 200]);
+    }
+  } catch (e) {
+    console.error('Error in alarm UI:', e);
+  }
 
   if ('Notification' in window && Notification.permission === 'granted') {
     new Notification(title, { body, icon: '/pwa-192x192.svg' });
@@ -17,5 +32,7 @@ export const checkAndFireAlarm = (title: string, body: string, alarmId: string) 
         localStorage.setItem(`alarm_${alarmId}_fired`, todayDate);
       }
     });
+  } else {
+    localStorage.setItem(`alarm_${alarmId}_fired`, todayDate);
   }
 };

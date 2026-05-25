@@ -69,6 +69,8 @@ export default function AdminEmployees() {
   const [newShiftCheckOutAfter, setNewShiftCheckOutAfter] = useState(120);
   const [newShiftCrossesMidnight, setNewShiftCrossesMidnight] = useState(false);
   const [newShiftIsActive, setNewShiftIsActive] = useState(true);
+  const [newShiftAllowSunday, setNewShiftAllowSunday] = useState(false);
+  const [newShiftAllowHoliday, setNewShiftAllowHoliday] = useState(false);
   const [newShiftUnit, setNewShiftUnit] = useState("");
   const [editingShiftId, setEditingShiftId] = useState<string | null>(null);
 
@@ -461,6 +463,8 @@ export default function AdminEmployees() {
         checkOutAfterMinutes: newShiftCheckOutAfter,
         crossesMidnight: newShiftCrossesMidnight,
         isActive: newShiftIsActive,
+        allowSunday: newShiftAllowSunday,
+        allowHoliday: newShiftAllowHoliday,
         unit: newShiftUnit === "none" ? "" : newShiftUnit
       };
       
@@ -509,6 +513,8 @@ export default function AdminEmployees() {
     setNewShiftCheckOutAfter(120);
     setNewShiftCrossesMidnight(false);
     setNewShiftIsActive(true);
+    setNewShiftAllowSunday(false);
+    setNewShiftAllowHoliday(false);
     setEditingShiftId(null);
   };
 
@@ -524,6 +530,8 @@ export default function AdminEmployees() {
     setNewShiftCheckOutAfter(shift.checkOutAfterMinutes || 120);
     setNewShiftCrossesMidnight(shift.crossesMidnight);
     setNewShiftIsActive(shift.isActive);
+    setNewShiftAllowSunday(shift.allowSunday || false);
+    setNewShiftAllowHoliday(shift.allowHoliday || false);
     setNewShiftUnit(shift.unit || "none");
     setEditingShiftId(shift.id);
     setIsAddShiftOpen(true);
@@ -1157,6 +1165,26 @@ export default function AdminEmployees() {
                       />
                       <Label htmlFor="shift-is-active" className="text-sm font-normal">
                         Aktifkan Shift
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2 pt-2">
+                      <Checkbox 
+                        id="shift-allow-sunday" 
+                        checked={newShiftAllowSunday}
+                        onCheckedChange={(checked) => setNewShiftAllowSunday(checked as boolean)}
+                      />
+                      <Label htmlFor="shift-allow-sunday" className="text-sm font-normal">
+                        Izinkan Absen di Hari Minggu
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2 pt-2">
+                      <Checkbox 
+                        id="shift-allow-holiday" 
+                        checked={newShiftAllowHoliday}
+                        onCheckedChange={(checked) => setNewShiftAllowHoliday(checked as boolean)}
+                      />
+                      <Label htmlFor="shift-allow-holiday" className="text-sm font-normal">
+                        Izinkan Absen di Hari Libur Nasional
                       </Label>
                     </div>
                   </div>
